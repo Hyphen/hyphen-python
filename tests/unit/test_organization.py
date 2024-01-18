@@ -37,3 +37,15 @@ class TestOrganization:
         org2 = client.organization.read(org.id)
         assert org2.id == org.id
         assert org2.name == org.name
+
+    @m.context("and listing organizations")
+    @m.it("should list all")
+    def test_list_organizations(self, client):
+        """Test listing organizations"""
+        # TODO: set up in state instead
+        for _ in range(5):
+            _  = client.organization.create(name=faker.company())
+
+        orgs = client.organization.list()
+        assert len(orgs) == 5
+        assert len(set([o.id for o in orgs])) == 5
