@@ -1,0 +1,48 @@
+interactions:
+- request:
+    body: ''
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-type:
+      - application/json
+      host:
+      - engine.dev.hyphen.ai
+      user-agent:
+      - python-httpx/0.26.0
+      x-api-key:
+      - xxxx-xxxx-xxxx-xxxx
+    method: GET
+    uri: https://engine.dev.hyphen.ai/api/quote
+  response:
+    content: '{"quote":"Zed''s dead, baby. Zed''s dead."}'
+    headers:
+      CF-Cache-Status:
+      - DYNAMIC
+      CF-RAY:
+      - 847a55214a19191e-EWR
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '41'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Thu, 18 Jan 2024 22:39:11 GMT
+      NEL:
+      - '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'
+      Report-To:
+      - '{"endpoints":[{"url":"xxxxxxxxxxxxxxxxxxxxxxxxxx"}],"group":"cf-nel","max_age":604800}'
+      Server:
+      - cloudflare
+      access-control-allow-origin:
+      - '*'
+      vary:
+      - Origin
+    http_version: HTTP/1.1
+    status_code: 200
+version: 1
