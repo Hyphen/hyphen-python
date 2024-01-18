@@ -2,16 +2,18 @@ from pathlib import Path
 from setuptools import setup, find_packages
 
 docs = Path(__file__).parent / "docs"
-long_description_file = docs / "pypi" / "long_description.md"
-assert long_description_file.exists(), "no long description file!"
-long_description = long_description_file.read_text()
+#long_description_file = docs / "pypi" / "long_description.md"
+#assert long_description_file.exists(), "no long description file!"
+#long_description = long_description_file.read_text()
+#version = Path(__file__).parent / "version.txt"
+#assert version.exists(), "no version!"
+#version.read_text().strip()
 
-version = Path(__file__).parent / "version.txt"
-assert version.exists(), "no version!"
-
+long_description = "Official Python SDK for the Hyphen API"
+version = "0.0.1a0"
 setup(
     name="hyphen",
-    version=version.read_text().strip(),
+    version=version,
     description="Official Python SDK for the Hyphen API",
     long_description=long_description,
     long_description_content_type="text/markdown",

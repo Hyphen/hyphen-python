@@ -11,3 +11,16 @@ services:
     volumes:
       - ./tests:/app/tests
       - ./hyphen:/app/hyphen
+
+  publish:
+    profiles: ["publish"]
+    image: hyphen
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PYTHON_VERSION: 3.6
+        ENVIRONMENT: development
+    volumes:
+      - .:/app
+    command: python3 -m build && python3 -m twine upload --repository testpypi dist/*
