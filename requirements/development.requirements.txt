@@ -1,4 +1,5 @@
 -r production.requirements.txt
-build
-twine
-pytest
+pytest~=8.0.0rc2
+twine~=4.0.2
+build~=1.0.3
+pytest-it~=0.1.4

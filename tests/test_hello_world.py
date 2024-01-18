@@ -10,5 +10,4 @@ class TestHelloWorld:
     @m.it("should return Hello World!")
     def test_hello_world(self):
         """Test the hello world function"""
-        hyphen = HyphenClient()
-        assert hyphen.helloworld() == "Hello World!"
+        assert HyphenClient.helloworld() == "Hello World!"
