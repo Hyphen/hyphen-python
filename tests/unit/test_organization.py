@@ -26,11 +26,14 @@ class TestOrganization:
         org  = client.organization.create(name=name)
         assert org.id
 
-    @m.context("and creating a new organization duplicate")
-    @m.it("should handle the error gracefully")
-    def test_create_organization_sad_dupe(self, client):
-        """Test creating a new organization fails gracefully duplicates"""
+    @m.context("and reading an organization")
+    @m.it("should read successfully")
+    def test_read_organization(self, client):
+        """Test reading an organization"""
+        # TODO: set up in state instead
         name = faker.company()
         org  = client.organization.create(name=name)
         assert org.id
-        new_org  = client.organization.create(name=name)
+        org2 = client.organization.read(org.id)
+        assert org2.id == org.id
+        assert org2.name == org.name

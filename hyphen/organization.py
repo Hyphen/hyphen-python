@@ -17,3 +17,7 @@ class OrganizationFactory:
     def create(self, name:str) -> "Organization":
         """Create a new organization"""
         return self.client.post("api/organizations", Organization, name=name)
+
+    def read(self, id:str) -> "Organization":
+        """Read an organization"""
+        return self.client.get(f"api/organizations/{id}", Organization)
