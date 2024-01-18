@@ -23,6 +23,14 @@ class TestOrganization:
     def test_create_organization(self, client):
         """Test creating a new organization"""
         name = faker.company()
-        org  = client.organization.create(name="Test Organization")
+        org  = client.organization.create(name=name)
         assert org.id
 
+    @m.context("and creating a new organization duplicate")
+    @m.it("should handle the error gracefully")
+    def test_create_organization_sad_dupe(self, client):
+        """Test creating a new organization fails gracefully duplicates"""
+        name = faker.company()
+        org  = client.organization.create(name=name)
+        assert org.id
+        new_org  = client.organization.create(name=name)
