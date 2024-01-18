@@ -37,3 +37,8 @@ services:
     volumes:
       - .:/app
     command: python3 -m build && python3 -m twine upload --repository testpypi dist/*
+
+networks:
+  default:
+    name: hyphen
+    external: true

@@ -1,9 +1,11 @@
 from pydantic import AnyHttpUrl, BaseModel
 import httpx
-from typing import Optional
+from typing import Optional, Callable
 
 from hyphen.loggers.hyphen_logger import get_logger
 from hyphen.exceptions import AuthenticationException
+
+from hyphen.organization import OrganizationFactory
 
 def logger():
     # deal with circular import
@@ -37,6 +39,9 @@ class HyphenClient:
                                         legacy_api_key=legacy_api_key,
                                         client_id=client_id,
                                         client_secret=client_secret)
+
+        self.organization = OrganizationFactory(self.client)
+
     @property
     def authenticated(self) -> bool:
         """Returns true if the client is authenticated, false otherwise"""
@@ -53,8 +58,15 @@ class HyphenClient:
             self.logger.error(e)
             raise e
 
+    def healthcheck(self) -> bool:
+        """Returns true if the client is healthy, false otherwise"""
+        return self.client.healthcheck()
+
+
+
 class HTTPRequestClient:
     host: AnyHttpUrl
+    client: Callable
     sync_client: httpx.Client
     headers:dict = {
         "Content-Type": "application/json",
@@ -74,14 +86,22 @@ class HTTPRequestClient:
             self.headers["x-api-key"] = legacy_api_key
         else:
             raise NotImplementedError("M2M authentication is not yet supported")
-        self.client = httpx.Client(base_url=host, headers=self.headers)
+        self.client = lambda : httpx.Client(base_url=host, headers=self.headers)
 
     def healthcheck(self)-> bool:
-        return self.client.get(f"{self.host}/healthcheck").status_code == 200
+        with self.client() as api:
+            return api.get("/healthcheck").status_code == 200
 
     def get(self, path:str, model:BaseModel):
-        with self.client as api:
+        with self.client() as api:
             response = api.get(path)
+        if response.status_code in (401, 403,):
+            raise AuthenticationException(response.status_code)
+        return model.model_validate_json(response.text)
+
+    def post(self, path:str, model:BaseModel, **kwargs):
+        with self.client() as api:
+            response = api.post(path, json=kwargs)
         if response.status_code in (401, 403,):
             raise AuthenticationException(response.status_code)
         return model.model_validate_json(response.text)
