@@ -1,0 +1,13 @@
+version: "3.7"
+services:
+  hyphen:
+    image: hyphen
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PYTHON_VERSION: 3.6
+        ENVIRONMENT: development
+    volumes:
+      - ./tests:/app/tests
+      - ./hyphen:/app/hyphen
