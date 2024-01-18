@@ -1,3 +1,4 @@
+-r production.requirements.txt
 build
 twine
 pytest
