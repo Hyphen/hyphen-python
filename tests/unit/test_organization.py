@@ -2,7 +2,7 @@ from pytest import mark as m
 from pytest import fixture
 from faker import Faker
 
-from settings import settings
+from hyphen.settings import settings
 from hyphen import HyphenClient
 
 faker = Faker()
