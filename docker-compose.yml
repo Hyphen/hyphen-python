@@ -11,6 +11,7 @@ services:
     env_file:
       - .env
     volumes:
+      - ./logs:/app/logs
       - ./tests:/app/tests
       - ./hyphen:/app/hyphen
 
