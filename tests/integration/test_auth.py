@@ -6,6 +6,7 @@ from hyphen import HyphenClient
 from hyphen.settings import settings
 
 @m.describe("When authenticating a client with Hyphen.ai")
+@m.integration
 class TestAuth:
 
     @m.vcr

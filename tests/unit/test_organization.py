@@ -9,6 +9,7 @@ from hyphen import HyphenClient
 faker = Faker()
 
 @m.describe("When working with organizations")
+@m.unit
 class TestOrganization:
 
     @fixture(scope="function")

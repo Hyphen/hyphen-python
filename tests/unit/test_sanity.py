@@ -5,6 +5,7 @@ from hyphen.settings import settings
 from hyphen import HyphenClient
 
 @m.describe("When working locally")
+@m.unit
 class TestSanity:
 
     @m.context("and setting up a dev environment")
