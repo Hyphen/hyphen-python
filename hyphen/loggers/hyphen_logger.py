@@ -40,7 +40,9 @@ LOGGING = {
         }
     },
 }
-def get_logger(name: str):
+def get_logger(name: str, level: str = "INFO"):
+
+    LOGGING["loggers"]["hyphen"]["level"] = level
     logging.config.dictConfig(LOGGING)
     logger = logging.getLogger("hyphen")
     return logger.getChild(name)
