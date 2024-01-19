@@ -31,9 +31,10 @@ class HyphenClient:
                  legacy_api_key: Optional[str]=None,
                  client_id: Optional[str]=None,
                  client_secret: Optional[str]=None,
+                 debug: Optional[bool]=False,
                  async_:Optional[bool]=False,) -> str:
 
-        self.logger = logger()
+        self.logger = logger(**{"level": "DEBUG" if debug else None})
         self.host = httpx.URL(str(host)) or "https://engine.hyphen.ai"
         logger.debug("Creating %s HyphenClient...", "async" if async_ else "sync")
         if async_:
@@ -109,8 +110,10 @@ class HTTPRequestClient:
                  legacy_api_key: Optional[str]=None,
                  client_id: Optional[str]=None,
                  client_secret: Optional[str]=None,
+                 debug: Optional[bool]=False,
                  timeout: Optional[float]=5.0):
-        self.logger = logger()
+
+        self.logger = logger(**{"level": "DEBUG" if debug else None})
         assert legacy_api_key or (client_id and client_secret), "You must provide either a legacy API key or a client id and secret to authenticate with Hyphen.ai"
 
         if legacy_api_key:

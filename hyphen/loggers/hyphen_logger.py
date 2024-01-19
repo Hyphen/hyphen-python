@@ -1,3 +1,4 @@
+from typing import Optional
 import logging.config
 import sys
 import json_log_formatter  # noqa: pylint=unused-import
@@ -40,9 +41,9 @@ LOGGING = {
         }
     },
 }
-def get_logger(name: str, level: str = "INFO"):
-
-    LOGGING["loggers"]["hyphen"]["level"] = level
+def get_logger(name: str, level:Optional[str]=None):
+    if level:
+        LOGGING["loggers"]["hyphen"]["level"] = level
     logging.config.dictConfig(LOGGING)
     logger = logging.getLogger("hyphen")
     return logger.getChild(name)
