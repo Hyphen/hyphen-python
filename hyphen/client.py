@@ -77,7 +77,8 @@ class HTTPRequestClient:
                  host: Optional[AnyHttpUrl]=None,
                  legacy_api_key: Optional[str]=None,
                  client_id: Optional[str]=None,
-                 client_secret: Optional[str]=None,):
+                 client_secret: Optional[str]=None,
+                 timeout: Optional[float]=5.0):
         self.logger = logger()
         assert legacy_api_key or (client_id and client_secret), "You must provide either a legacy API key or a client id and secret to authenticate with Hyphen.ai"
 
@@ -86,7 +87,7 @@ class HTTPRequestClient:
             self.headers["x-api-key"] = legacy_api_key
         else:
             raise NotImplementedError("M2M authentication is not yet supported")
-        self.client = lambda : httpx.Client(base_url=host, headers=self.headers)
+        self.client = lambda : httpx.Client(base_url=host, headers=self.headers, timeout=timeout)
 
     def healthcheck(self)-> bool:
         with self.client() as api:
