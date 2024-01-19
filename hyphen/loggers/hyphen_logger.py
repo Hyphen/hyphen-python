@@ -25,15 +25,7 @@ LOGGING = {
             "stream": sys.stdout,
             "formatter": "curt",
             "filters": ["healthcheck"],
-        },
-        "file": {
-            "level": "DEBUG",
-            "class": "logging.handlers.RotatingFileHandler",
-            "maxBytes": 15728640,  # 1024 * 1024 * 15B = 15MB
-            "backupCount": 2,
-            "formatter": "json",
-            "filename": "/app/logs/logs.json",
-        },
+        }
     },
     "filters": {
         "healthcheck": {
@@ -43,7 +35,7 @@ LOGGING = {
     "loggers": {
         "hyphen": {
             "level": "INFO",
-            "handlers": ["console", "file"],
+            "handlers": ["console"],
             "propagate": False,
         }
     },

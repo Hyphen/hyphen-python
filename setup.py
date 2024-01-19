@@ -25,7 +25,10 @@ setup(
     packages=find_packages(exclude=["tests", "tests.*", "docs", "docs.*"]),
     zip_safe=False,
     install_requires=[
-        'requests >= 2.20; python_version >= "3.0"',
+        'pydantic~=2.5.3',
+        'pydantic_settings~=2.1.0',
+        'httpx~=0.26.0',
+        'json_log_formatter~=0.5.2',
     ],
     python_requires=">=3.6",
     project_urls={
