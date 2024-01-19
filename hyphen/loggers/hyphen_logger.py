@@ -46,5 +46,6 @@ def get_logger(name: str, level:Optional[str]=None):
     #    LOGGING["loggers"]["hyphen"]["level"] = level
     #logging.config.dictConfig(LOGGING)
     logging.basicConfig(level=logging.DEBUG, handlers=[logging.StreamHandler(sys.stdout)])
-    logger = logging.getLogger("hyphen").setLevel(logging.DEBUG)
-    return logger.getChild(name)
+    logger = logging.getLogger("hyphen")
+    logger.setLevel(logging.DEBUG)
+    return logger
