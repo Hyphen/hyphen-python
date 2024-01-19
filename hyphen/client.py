@@ -7,9 +7,9 @@ from hyphen.exceptions import AuthenticationException
 
 from hyphen.organization import OrganizationFactory, AsyncOrganizationFactory
 
-def logger():
+def logger(level:Optional[str]=None):
     # deal with circular import
-    return get_logger(__name__)
+    return get_logger(__name__, level=level)
 
 class HyphenClient:
     """The primary interface for working with the Hyphen Engine API.
