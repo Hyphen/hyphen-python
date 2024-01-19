@@ -25,9 +25,9 @@ setup(
     packages=find_packages(exclude=["tests", "tests.*", "docs", "docs.*"]),
     zip_safe=False,
     install_requires=[
-        'pydantic~=2.3.3',
+        'pydantic>=2.0.1',
         'pydantic_settings~=2.0.0',
-        'httpx~=0.25.0',
+        'httpx>=0.25.0',
         'json_log_formatter~=0.5.2',
     ],
     python_requires=">=3.6",
