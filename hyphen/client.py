@@ -35,6 +35,7 @@ class HyphenClient:
 
         self.logger = logger()
         self.host = httpx.URL(str(host)) or "https://engine.hyphen.ai"
+        logger.debug("Creating %s HyphenClient...", "async" if async_ else "sync")
         if async_:
             self.client = AsyncHTTPRequestClient(host=self.host,
                                             legacy_api_key=legacy_api_key,
@@ -42,6 +43,7 @@ class HyphenClient:
                                             client_secret=client_secret)
 
             self.organization = AsyncOrganizationFactory(self.client)
+            logger.debug("Async client created.")
             return
         self.client = HTTPRequestClient(host=self.host,
                                         legacy_api_key=legacy_api_key,
@@ -49,6 +51,7 @@ class HyphenClient:
                                         client_secret=client_secret)
 
         self.organization = OrganizationFactory(self.client)
+        logger.debug("Client created.")
 
     @property
     def authenticated(self) -> bool:
@@ -66,6 +69,7 @@ class HyphenClient:
             self.logger.error(e)
             raise e
 
+    @property
     async def async_authenticated(self) -> bool:
         """Returns true if the client is authenticated, false otherwise"""
         class Quote(BaseModel):
@@ -117,6 +121,7 @@ class HTTPRequestClient:
         self._set_client(host, timeout)
 
     def _set_client(self,host:AnyHttpUrl, timeout:int):
+        self.logger.debug("attaching sync client with host %s and timeout %s and headers set %s", host, timeout, str(self.headers.keys()))
         self.client = lambda : httpx.Client(base_url=str(host), headers=self.headers, timeout=timeout)
 
     def healthcheck(self)-> bool:
@@ -124,10 +129,13 @@ class HTTPRequestClient:
             return api.get("/healthcheck").status_code == 200
 
     def get(self, path:str, model:BaseModel):
+        self.logger.debug("getting GET %s", path)
         with self.client() as api:
             response = api.get(path)
+        self.logger.debug("response status code %s", response.status_code)
         if response.status_code in (401, 403,):
             raise AuthenticationException(response.status_code)
+        self.logger.debug("generating response model...")
         return model.model_validate_json(response.text)
 
     def post(self, path:str, model:BaseModel, **kwargs):
@@ -149,10 +157,13 @@ class AsyncHTTPRequestClient(HTTPRequestClient):
             return await api.get("/healthcheck").status_code == 200
 
     async def get(self, path:str, model:BaseModel):
+        self.logger.debug("async getting GET %s", path)
         async with self.client() as api:
             response = await api.get(path)
+        self.logger.debug("async response status code %s", response.status_code)
         if response.status_code in (401, 403,):
             raise AuthenticationException(response.status_code)
+        self.logger.debug("async generating response model...")
         return model.model_validate_json(response.text)
 
     async def post(self, path:str, model:BaseModel, **kwargs):
