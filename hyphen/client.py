@@ -36,7 +36,7 @@ class HyphenClient:
 
         self.logger = logger(**{"level": "DEBUG" if debug else None})
         self.host = httpx.URL(str(host)) or "https://engine.hyphen.ai"
-        logger.debug("Creating %s HyphenClient...", "async" if async_ else "sync")
+        self.logger.debug("Creating %s HyphenClient...", "async" if async_ else "sync")
         if async_:
             self.client = AsyncHTTPRequestClient(host=self.host,
                                             legacy_api_key=legacy_api_key,
@@ -45,7 +45,7 @@ class HyphenClient:
                                             debug=debug)
 
             self.organization = AsyncOrganizationFactory(self.client)
-            logger.debug("Async client created.")
+            self.logger.debug("Async client created.")
             return
         self.client = HTTPRequestClient(host=self.host,
                                         legacy_api_key=legacy_api_key,
@@ -54,7 +54,7 @@ class HyphenClient:
                                         debug=debug)
 
         self.organization = OrganizationFactory(self.client)
-        logger.debug("Client created.")
+        self.logger.debug("Client created.")
 
     @property
     def authenticated(self) -> bool:
