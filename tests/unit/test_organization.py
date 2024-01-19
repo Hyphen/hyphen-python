@@ -1,3 +1,4 @@
+from typing import Generator
 from pytest import mark as m
 from pytest import fixture
 from faker import Faker
@@ -42,10 +43,21 @@ class TestOrganization:
     @m.it("should list all")
     def test_list_organizations(self, client):
         """Test listing organizations"""
-        # TODO: set up in state instead
+        # TODO: set up in state instead, right now all this janky math is due to the remote db
+
+        ids = set()
+        def cycle_results(ids):
+            for org in client.organization.list():
+                ids.add(org.id)
+
+        cycle_results(ids)
+        first_count = len(ids)
+
+
         for _ in range(5):
             _  = client.organization.create(name=faker.company())
 
-        orgs = client.organization.list()
-        assert len(orgs) == 5
-        assert len(set([o.id for o in orgs])) == 5
+        cycle_results(ids)
+        second_count = len(ids)
+
+        assert (second_count - first_count) == 5

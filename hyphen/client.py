@@ -1,6 +1,6 @@
 from pydantic import AnyHttpUrl, BaseModel
 import httpx
-from typing import Optional, Callable
+from typing import Optional, Callable, List, Tuple
 
 from hyphen.loggers.hyphen_logger import get_logger
 from hyphen.exceptions import AuthenticationException

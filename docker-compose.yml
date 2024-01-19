@@ -14,6 +14,7 @@ services:
       - ./logs:/app/logs
       - ./tests:/app/tests
       - ./hyphen:/app/hyphen
+      - ./.pytest_cache:/app/.pytest_cache
 
   docs:
     profiles:  ["disabled"]
@@ -36,6 +37,7 @@ services:
         ENVIRONMENT: development
     volumes:
       - .:/app
+
     command: python3 -m build && python3 -m twine upload --repository testpypi dist/*
 
 networks:
