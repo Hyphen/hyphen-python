@@ -41,7 +41,8 @@ class HyphenClient:
             self.client = AsyncHTTPRequestClient(host=self.host,
                                             legacy_api_key=legacy_api_key,
                                             client_id=client_id,
-                                            client_secret=client_secret)
+                                            client_secret=client_secret,
+                                            debug=debug)
 
             self.organization = AsyncOrganizationFactory(self.client)
             logger.debug("Async client created.")
@@ -49,7 +50,8 @@ class HyphenClient:
         self.client = HTTPRequestClient(host=self.host,
                                         legacy_api_key=legacy_api_key,
                                         client_id=client_id,
-                                        client_secret=client_secret)
+                                        client_secret=client_secret,
+                                        debug=debug)
 
         self.organization = OrganizationFactory(self.client)
         logger.debug("Client created.")
