@@ -20,6 +20,9 @@ class HyphenClient:
         legacy_api_key: Generally unsupported, but can be used for local development
         client_id: The client id for m2m authentication
         client_secret: The client secret used for m2m authentication
+        impersonate_id: The id of the user to impersonate, used for "on behalf of" authentication
+        debug: if True, the client will log debug messages
+        async_: if True returns an async client
     """
     client: Union["HTTPRequestClient", "AsyncHTTPRequestClient"]
 
@@ -33,6 +36,7 @@ class HyphenClient:
                  legacy_api_key: Optional[str]=None,
                  client_id: Optional[str]=None,
                  client_secret: Optional[str]=None,
+                 impersonate_id: Optional[str]=None,
                  debug: Optional[bool]=False,
                  async_:Optional[bool]=False,) -> str:
 
@@ -55,6 +59,7 @@ class HyphenClient:
                                         legacy_api_key=legacy_api_key,
                                         client_id=client_id,
                                         client_secret=client_secret,
+                                        impersonate_id=impersonate_id,
                                         debug=debug)
 
         self.member = MemberFactory(self.client)
@@ -118,6 +123,7 @@ class HTTPRequestClient:
                  legacy_api_key: Optional[str]=None,
                  client_id: Optional[str]=None,
                  client_secret: Optional[str]=None,
+                 impersonate_id: Optional[str]=None,
                  debug: Optional[bool]=False,
                  timeout: Optional[float]=5.0):
 
@@ -130,6 +136,9 @@ class HTTPRequestClient:
         else:
             raise NotImplementedError("M2M authentication is not yet supported")
         self._set_client(host, timeout)
+        if impersonate_id:
+            self.logger.debug("Impersonating user %s", impersonate_id)
+            self.headers["x-impersonate-id"] = impersonate_id
 
     def _set_client(self,host:AnyHttpUrl, timeout:int):
         self.logger.debug("attaching sync client with host %s and timeout %s and headers set %s", host, timeout, str(self.headers.keys()))
