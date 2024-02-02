@@ -5,7 +5,9 @@ from typing import Optional, Callable, Union
 from hyphen.loggers.hyphen_logger import get_logger
 from hyphen.exceptions import AuthenticationException
 
+from hyphen.member import MemberFactory, AsyncMemberFactory
 from hyphen.organization import OrganizationFactory, AsyncOrganizationFactory
+from hyphen.team import TeamFactory, AsyncTeamFactory
 
 def logger(level:Optional[str]=None):
     # deal with circular import
@@ -44,7 +46,9 @@ class HyphenClient:
                                             client_secret=client_secret,
                                             debug=debug)
 
+            self.member = AsyncMemberFactory(self.client)
             self.organization = AsyncOrganizationFactory(self.client)
+            self.team = AsyncTeamFactory(self.client)
             self.logger.debug("Async client created.")
             return
         self.client = HTTPRequestClient(host=self.host,
@@ -53,7 +57,9 @@ class HyphenClient:
                                         client_secret=client_secret,
                                         debug=debug)
 
+        self.member = MemberFactory(self.client)
         self.organization = OrganizationFactory(self.client)
+        self.team = TeamFactory(self.client)
         self.logger.debug("Client created.")
 
     @property

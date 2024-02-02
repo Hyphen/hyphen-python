@@ -1,7 +1,6 @@
 from typing import Optional
 import logging.config
 import sys
-import json_log_formatter  # noqa: pylint=unused-import
 
 LOGGING = {
     "version": 1,
@@ -9,9 +8,6 @@ LOGGING = {
     "formatters": {
         "verbose": {
             "format": "%(asctime)s %(name)-12s %(levelname)-8s %(message)s",
-        },
-        "json": {
-            "()": "json_log_formatter.VerboseJSONFormatter",
         },
         "curt": {
             "class": "hyphen.loggers.curt_formatter.CurtFormatter",
@@ -42,10 +38,9 @@ LOGGING = {
     },
 }
 def get_logger(name: str, level:Optional[str]=None):
-    #if level:
-    #    LOGGING["loggers"]["hyphen"]["level"] = level
-    #logging.config.dictConfig(LOGGING)
-    logging.basicConfig(level=logging.DEBUG, handlers=[logging.StreamHandler(sys.stdout)])
+    if level:
+        LOGGING["loggers"]["hyphen"]["level"] = level
+    logging.config.dictConfig(LOGGING)
     logger = logging.getLogger("hyphen")
-    logger.setLevel(logging.DEBUG)
+    return logger.getChild(name)
     return logger
