@@ -6,6 +6,7 @@ from hyphen.loggers.hyphen_logger import get_logger
 from hyphen.exceptions import AuthenticationException
 
 from hyphen.member import MemberFactory, AsyncMemberFactory
+from hyphen.movie_quote import MovieQuoteFactory, AsyncMovieQuoteFactory
 from hyphen.organization import OrganizationFactory, AsyncOrganizationFactory
 from hyphen.team import TeamFactory, AsyncTeamFactory
 
@@ -51,6 +52,7 @@ class HyphenClient:
                                             debug=debug)
 
             self.member = AsyncMemberFactory(self.client)
+            self.movie_quote = AsyncMovieQuoteFactory(self.client)
             self.organization = AsyncOrganizationFactory(self.client)
             self.team = AsyncTeamFactory(self.client)
             self.logger.debug("Async client created.")
@@ -63,6 +65,7 @@ class HyphenClient:
                                         debug=debug)
 
         self.member = MemberFactory(self.client)
+        self.movie_quote = MovieQuoteFactory(self.client)
         self.organization = OrganizationFactory(self.client)
         self.team = TeamFactory(self.client)
         self.logger.debug("Client created.")
