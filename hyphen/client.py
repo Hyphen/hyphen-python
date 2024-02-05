@@ -44,30 +44,27 @@ class HyphenClient:
         self.logger = logger(**{"level": "DEBUG" if debug else None})
         self.host = httpx.URL(str(host)) or "https://engine.hyphen.ai"
         self.logger.debug("Creating %s HyphenClient...", "async" if async_ else "sync")
+        client_args = {
+            "host":self.host,
+            "legacy_api_key":legacy_api_key,
+            "client_id":client_id,
+            "client_secret":client_secret,
+            "impersonate_id":impersonate_id,
+            "debug":debug
+        }
         if async_:
-            self.client = AsyncHTTPRequestClient(host=self.host,
-                                            legacy_api_key=legacy_api_key,
-                                            client_id=client_id,
-                                            client_secret=client_secret,
-                                            debug=debug)
-
+            self.client = AsyncHTTPRequestClient(**client_args)
             self.member = AsyncMemberFactory(self.client)
             self.movie_quote = AsyncMovieQuoteFactory(self.client)
             self.organization = AsyncOrganizationFactory(self.client)
             self.team = AsyncTeamFactory(self.client)
             self.logger.debug("Async client created.")
             return
-        self.client = HTTPRequestClient(host=self.host,
-                                        legacy_api_key=legacy_api_key,
-                                        client_id=client_id,
-                                        client_secret=client_secret,
-                                        impersonate_id=impersonate_id,
-                                        debug=debug)
-
-        self.member = MemberFactory(self.client)
-        self.movie_quote = MovieQuoteFactory(self.client)
-        self.organization = OrganizationFactory(self.client)
-        self.team = TeamFactory(self.client)
+        self.client = HTTPRequestClient(**client_args)
+        #self.member = MemberFactory(self.client)
+        #self.movie_quote = MovieQuoteFactory(self.client)
+        #self.organization = OrganizationFactory(self.client)
+        #self.team = TeamFactory(self.client)
         self.logger.debug("Client created.")
 
     @property
@@ -138,10 +135,10 @@ class HTTPRequestClient:
             self.headers["x-api-key"] = legacy_api_key
         else:
             raise NotImplementedError("M2M authentication is not yet supported")
-        self._set_client(host, timeout)
         if impersonate_id:
             self.logger.debug("Impersonating user %s", impersonate_id)
             self.headers["x-impersonate-id"] = impersonate_id
+        self._set_client(host, timeout)
 
     def _set_client(self,host:AnyHttpUrl, timeout:int):
         self.logger.debug("attaching sync client with host %s and timeout %s and headers set %s", host, timeout, str(self.headers.keys()))
@@ -170,7 +167,6 @@ class HTTPRequestClient:
 
 class AsyncHTTPRequestClient(HTTPRequestClient):
     sync_client: httpx.AsyncClient
-
 
     def _set_client(self,host:AnyHttpUrl, timeout:int):
         self.client = lambda : httpx.AsyncClient(base_url=host, headers=self.headers, timeout=timeout)
