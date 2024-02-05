@@ -11,5 +11,5 @@ def cli(environment, k:Optional[str], failed:bool):
     click.echo("running pytest...")
 
     failed_cmd = '--lf --last-failed-no-failures none' if failed else ''
-
-    environment.run_in_docker(f"pytest tests {'-k \"{k}\"' if k else ''}{failed_cmd}")
+    k = f'-k "{k}" ' if k else ''
+    environment.run_in_docker(f"pytest tests {k}{failed_cmd}")

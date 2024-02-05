@@ -61,10 +61,10 @@ class HyphenClient:
             self.logger.debug("Async client created.")
             return
         self.client = HTTPRequestClient(**client_args)
-        #self.member = MemberFactory(self.client)
-        #self.movie_quote = MovieQuoteFactory(self.client)
-        #self.organization = OrganizationFactory(self.client)
-        #self.team = TeamFactory(self.client)
+        self.member = MemberFactory(self.client)
+        self.movie_quote = MovieQuoteFactory(self.client)
+        self.organization = OrganizationFactory(self.client)
+        self.team = TeamFactory(self.client)
         self.logger.debug("Client created.")
 
     @property
