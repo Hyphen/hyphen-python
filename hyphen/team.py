@@ -1,46 +1,58 @@
-from typing import TYPE_CHECKING, Optional, List, Union, Any
+from typing import TYPE_CHECKING, Optional, List
 from pydantic import BaseModel
+
+from hyphen.base_factory import BaseFactory, CollectionList
+from hyphen.member import MemberFactory
 
 if TYPE_CHECKING:
     from hyphen.client import HTTPRequestClient, AsyncHTTPRequestClient
 
 
 class Team(BaseModel):
-    id: Optional[str]
+    id: Optional[str] = None
     name: str
 
-class TeamFactory:
+    _member_factory: Optional["MemberFactory"] = None
 
-    def __init__(self, client:Union["HTTPRequestClient","AsyncHTTPRequestClient"]):
-        self.client = client
+    @property
+    def member(self) -> "MemberFactory":
+        return self._member_factory
 
-        # not implemented stubber, just until endpoints are implemented
-        class NotImplementedStub:
-            def __getattr__(self, name:"Any"):
-                raise NotImplementedError("Teams is not implemented in hyphen.ai yet")
-        self.client = NotImplementedStub
+    @property
+    def members(self) -> "MemberFactory":
+        """allow both forms for a better Developer experience"""
+        return self._member_factory
+
+class TeamFactory(BaseFactory):
+    _object_class = Team
+
+    def __init__(self, client:"HTTPRequestClient"):
+        super().__init__(client)
+        self.url_path = f"api/organizations/{self.client.hyphen_client.organization_id}/teams"
 
     def create(self, name:str) -> "Team":
-        """Create a new team, within the context of the current organization"""
-        return self.client.post("api/teams", Team, name=name)
+        """Create a new team"""
+        instance = Team(name=name)
+        created = self.client.post(self.url_path, Team, instance)
+        created._member_factory = MemberFactory(self.client)
+        created._member_factory.url_path = f"{self.url_path}/{created.id}/members"
+        return created
 
     def read(self, id:str) -> "Team":
-        """Read a team"""
-        return self.client.get(f"api/teams/{id}", Team)
+        """Read an team"""
+        raise NotImplementedError("Reading specific teams is not yet implemented")
 
     def list(self) -> "Team":
-        """List all teams"""
-
-        class TeamList(BaseModel):
+        """List all teams available with the provided credentials.
+        """
+        class HyphenCollection(CollectionList):
             data: List[Team]
 
-            def __iter__(self):
-                return iter(self.data)
-
-            def __getitem__(self, item):
-                return self.data[item]
-
-        return self.client.get("api/teams", TeamList)
+        collection = self.client.get(self.url_path, HyphenCollection)
+        for team in collection:
+            team._member_factory = MemberFactory(self.client)
+            team._member_factory.url_path = f"{self.url_path}/{team.id}/members"
+        return collection
 
 class AsyncTeamFactory(TeamFactory):
 

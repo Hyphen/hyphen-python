@@ -21,7 +21,8 @@ class OrganizationFactory():
 
     def create(self, name:str) -> "Organization":
         """Create a new organization"""
-        return self.client.post(self.url_path, Organization, name=name)
+        instance = Organization(name=name)
+        return self.client.post(self.url_path, Organization, instance)
 
     def read(self, id:str) -> "Organization":
         """Read an organization"""

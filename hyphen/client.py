@@ -3,6 +3,8 @@ import httpx
 from typing import Optional, Union, AsyncGenerator, Generator, TYPE_CHECKING
 
 from hyphen.loggers.hyphen_logger import get_logger
+from hyphen.base_object import RESTModel
+from hyphen.base_factory import BaseFactory
 from hyphen.exceptions import AuthenticationException, HyphenApiException
 
 from hyphen.member import MemberFactory, AsyncMemberFactory
@@ -143,6 +145,21 @@ class HyphenClient:
         """Returns true if the client is healthy, false otherwise"""
         return await self.client.healthcheck()
 
+    ### Pluralize factory accessors ###
+    # because why not make everyone's life easier?
+    @property
+    def organizations(self) -> "OrganizationFactory":
+        return self.organization
+    @property
+    def members(self) -> "MemberFactory":
+        return self.member
+    @property
+    def movie_quotes(self) -> "MovieQuoteFactory":
+        return self.movie_quote
+    @property
+    def teams(self) -> "TeamFactory":
+        return self.team
+
 
 class HTTPRequestClient:
     host: "httpx.URL"
@@ -189,13 +206,23 @@ class HTTPRequestClient:
         with self.client() as api:
             return api.get("/healthcheck").status_code == 200
 
-    def get(self, path:str, model:BaseModel):
+    def get(self, path:str, model:"RESTModel"):
         self.logger.debug("getting GET %s", path)
         response = self.client.get(path)
         self.logger.debug("response status code %s", response.status_code)
         if response.status_code in (401, 403,):
             raise AuthenticationException(response.status_code)
+        if round(response.status_code, -2) != 200:
+            self.logger.debug(
+                "Unexpected response status code from Hyphen.ai: response.status_code=%s, response.text=%s, path=%s",
+                response.status_code,
+                response.text,
+                path,
+            )
+            raise HyphenApiException(response.status_code, response.text)
         self.logger.debug("generating response model...")
+        if not response.text:
+            return None
         response_values = response.json()
         if isinstance(response_values, list):
             response_values = {"data": response_values}
@@ -219,6 +246,34 @@ class HTTPRequestClient:
                 instance_json
             )
             raise HyphenApiException(response.status_code, response.text)
+        response_values = response.json()
+        if isinstance(response_values, list):
+            response_values = {"data": response_values}
+        try:
+            return model.model_validate(response_values)
+        except ValidationError as e:
+            self.logger.error("Unexpected response body from Hyphen.ai: %s", response_values)
+            raise e
+
+    def put(self,
+            path:str,
+            model:Optional["BaseModel"]=None,
+            instance:Optional["RESTModel"]=None):
+        instance_json = instance.model_dump_json(exclude_unset=True, by_alias=True)
+        response = self.client.put(path, data=instance_json)
+        if response.status_code in (401, 403,):
+            raise AuthenticationException(response.status_code)
+        if round(response.status_code, -2) != 200:
+            self.logger.debug(
+                "Unexpected response status code from Hyphen.ai: response.status_code=%s, response.text=%s, path=%s, instance=%s",
+                response.status_code,
+                response.text,
+                path,
+                instance_json
+            )
+            raise HyphenApiException(response.status_code, response.text)
+        if not any((response.text, model,)):
+            return None
         response_values = response.json()
         if isinstance(response_values, list):
             response_values = {"data": response_values}
