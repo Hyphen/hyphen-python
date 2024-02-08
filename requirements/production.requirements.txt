@@ -3,3 +3,4 @@ pydantic~=2.5.3
 pydantic_settings~=2.1.0
 httpx~=0.26.0
 json_log_formatter~=0.5.2
+humps~=0.2.2

@@ -1,0 +1,13 @@
+site_name: Hyphen-Python
+plugins:
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          options:
+            show_source: false
+            heading_level: 3
+            parameter_type: true
+            parameter_headings: true
+            signature_crossrefs: false
+            show_root_heading: true

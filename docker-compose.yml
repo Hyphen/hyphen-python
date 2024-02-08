@@ -4,7 +4,7 @@ services:
     image: hyphen
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: dockerfiles/Dockerfile
       args:
         PYTHON_VERSION: 3.11
         ENVIRONMENT: development
@@ -17,21 +17,24 @@ services:
       - ./.pytest_cache:/app/.pytest_cache
 
   docs:
-    profiles:  ["disabled"]
     hostname: docs
-    image: ethanknox/docula:0.3.7
+    image: docs
+    build:
+      context: .
+      dockerfile: dockerfiles/docs.Dockerfile
     volumes:
       - ./docs:/docs
-    command: --serve --watch --port=8081
+      - ./hyphen:/package_src/hyphen
+    environment:
+      - PYTHONPATH=/package_src
     ports:
-      - "8081:8081"
-
+      - "8000:8000"
   publish:
     profiles: ["publish"]
     image: hyphen
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: dockerfiles/Dockerfile
       args:
         PYTHON_VERSION: 3.6
         ENVIRONMENT: development

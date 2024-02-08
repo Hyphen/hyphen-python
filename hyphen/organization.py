@@ -1,29 +1,35 @@
-from typing import TYPE_CHECKING, Optional, List, Union
+from typing import Optional, List
 from pydantic import BaseModel
 
-if TYPE_CHECKING:
-    from hyphen.client import HTTPRequestClient, AsyncHTTPRequestClient
-
-
 class Organization(BaseModel):
+    """A company or group representation within the Hyphen.ai API.
+
+    All assets at Hyphen belong to an Organization. While it is unusual for a Member to belong to more than one Organization, it is possible;
+    the [`HyphenClient`][hyphen.client.HyphenClient] will attempt to determine the correct Organization to use based on the credentials provided, but you will need to specify an
+    organization id if the credentials are ambiguous.
+    """
     id: Optional[str]
     name: str
 
-class OrganizationFactory:
+class OrganizationFactory():
+    url_path: str
 
-    def __init__(self, client:Union["HTTPRequestClient","AsyncHTTPRequestClient"]):
+    def __init__(self, client):
+        """Note: Organization is the only factory that does not inherit from `BaseFactory` because it is used to determine the organization associated with the credentials."""
         self.client = client
+        self.url_path = "api/organizations"
 
     def create(self, name:str) -> "Organization":
         """Create a new organization"""
-        return self.client.post("api/organizations", Organization, name=name)
+        return self.client.post(self.url_path, Organization, name=name)
 
     def read(self, id:str) -> "Organization":
         """Read an organization"""
         return self.client.get(f"api/organizations/{id}", Organization)
 
     def list(self) -> "Organization":
-        """List all organizations"""
+        """List all organizations available with the provided credentials.
+        """
 
         class OrganizationList(BaseModel):
             data: List[Organization]
@@ -34,17 +40,17 @@ class OrganizationFactory:
             def __getitem__(self, item):
                 return self.data[item]
 
-        return self.client.get("api/organizations", OrganizationList)
+        return self.client.get(self.url_path, OrganizationList)
 
 class AsyncOrganizationFactory(OrganizationFactory):
 
     async def create(self, name:str) -> "Organization":
         """Create a new organization"""
-        return await self.client.post("api/organizations", Organization, name=name)
+        return await self.client.post(self.url_path, Organization, name=name)
 
     async def read(self, id:str) -> "Organization":
         """Read an organization"""
-        return await self.client.get(f"api/organizations/{id}", Organization)
+        return await self.client.get(f"{self.url_path}/{id}", Organization)
 
     async def list(self) -> "Organization":
         """List all organizations"""
@@ -58,4 +64,4 @@ class AsyncOrganizationFactory(OrganizationFactory):
             def __getitem__(self, item):
                 return self.data[item]
 
-        return await self.client.get("api/organizations", OrganizationList)
+        return await self.client.get(self.url_path, OrganizationList)
