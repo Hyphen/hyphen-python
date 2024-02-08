@@ -26,7 +26,7 @@ class OrganizationFactory():
 
     def read(self, id:str) -> "Organization":
         """Read an organization"""
-        return self.client.get(f"api/organizations/{id}", Organization)
+        return self.client.get(f"{self.url_path}/{id}", Organization)
 
     def list(self) -> "Organization":
         """List all organizations available with the provided credentials.
@@ -47,7 +47,8 @@ class AsyncOrganizationFactory(OrganizationFactory):
 
     async def create(self, name:str) -> "Organization":
         """Create a new organization"""
-        return await self.client.post(self.url_path, Organization, name=name)
+        instance = Organization(name=name)
+        return self.client.post(self.url_path, Organization, instance)
 
     async def read(self, id:str) -> "Organization":
         """Read an organization"""

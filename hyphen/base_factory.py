@@ -71,7 +71,7 @@ class AsyncBaseFactory(BaseFactory):
     _object_class: type
     url_path: str
 
-    async def __init__(self, client: "AsyncHTTPRequestClient"):
+    async def __init__(self, client:"HTTPRequestClient"):
         """Initialize the object factory.
 
         Note: The first time any object is initilized it will check to see if `hyphen_client.organization_id` is set.
@@ -87,11 +87,12 @@ class AsyncBaseFactory(BaseFactory):
                                                       f"Hyphen.ai returned {org_count} organizations authorized by these credentails."))
             self.client.hyphen_client.organization_id = self.client.hyphen_client.organization.list()[0].id
 
-    async def create(self, name:str) -> "Any":
+    async def create(self, **kwargs) -> "Any":
         f"""Create a new {str(self._object_class)}, within the context of the current organization"""
-        async def _create(name:str) -> self._object_class:
-            return await self.client.post(self.url_path, self._object_class, name=name)
-        return await _create(name)
+        async def _create(**kwargs) -> self._object_class:
+            Candidate = self._object_class(**kwargs)
+            return await self.client.post(self.url_path, self._object_class, Candidate)
+        return await _create(**kwargs)
 
     async def read(self, id:str) -> "Any":
         f"""Read a {self._object_class}"""
@@ -101,4 +102,11 @@ class AsyncBaseFactory(BaseFactory):
 
     async def list(self) -> "CollectionList":
         """List all {self._object_class}s"""
-        return await self.client.get(self.url_path, CollectionList)
+        class HyphenCollection(CollectionList):
+            data: List[self._object_class]
+
+        return await self.client.get(self.url_path, HyphenCollection)
+
+    async def delete(self, id:str) -> None:
+        f"""Delete a {self._object_class}"""
+        return await self.client.delete(f"{self.url_path}/{id}")

@@ -55,3 +55,18 @@ class AsyncMemberFactory(MemberFactory):
     def __init__(self, client:"AsyncHTTPRequestClient"):
         super().__init__(client)
         self.url_path = f"api/organizations/{self.client.hyphen_client.organization_id}/members"
+
+    async def add(self, member: Union["Member",str]) -> None:
+        """Add a member to the team"""
+        if "team" not in self.url_path:
+            raise IncorrectMethodException("To add a Member to an Organization, use `client.member.create()`. To add a Member to a Team, use `team.member.add()`.")
+
+        return await self.client.put(self.url_path,
+                               instance=MemberIdsReference(member_ids=member))
+
+    async def remove(self, member: Union["Member",str]) -> None:
+        """Remove a member from the team"""
+        if "team" not in self.url_path:
+            raise IncorrectMethodException("To delete a Member from an Organization, use `client.member.delete()`. To remove a Member from a Team, use `team.member.remove()`.")
+        return await self.client.delete(self.url_path,
+                                  instance=MemberIdsReference(member_ids=member))

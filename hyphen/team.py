@@ -58,22 +58,24 @@ class AsyncTeamFactory(TeamFactory):
 
     async def create(self, name:str) -> "Team":
         """Create a new team"""
-        return await self.client.post("api/teams", Team, name=name)
+        instance = Team(name=name)
+        created = await self.client.post(self.url_path, Team, instance)
+        created._member_factory = MemberFactory(self.client)
+        created._member_factory.url_path = f"{self.url_path}/{created.id}/members"
+        return created
 
     async def read(self, id:str) -> "Team":
         """Read an team"""
-        return await self.client.get(f"api/teams/{id}", Team)
+        raise NotImplementedError("Reading specific teams is not yet implemented")
 
     async def list(self) -> "Team":
-        """List all teams"""
-
-        class TeamList(BaseModel):
+        """List all teams available with the provided credentials.
+        """
+        class HyphenCollection(CollectionList):
             data: List[Team]
 
-            def __iter__(self):
-                return iter(self.data)
-
-            def __getitem__(self, item):
-                return self.data[item]
-
-        return await self.client.get("api/teams", TeamList)
+        collection = await self.client.get(self.url_path, HyphenCollection)
+        for team in collection:
+            team._member_factory = MemberFactory(self.client)
+            team._member_factory.url_path = f"{self.url_path}/{team.id}/members"
+        return collection

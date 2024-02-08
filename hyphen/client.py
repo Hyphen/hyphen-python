@@ -4,7 +4,6 @@ from typing import Optional, Union, AsyncGenerator, Generator, TYPE_CHECKING
 
 from hyphen.loggers.hyphen_logger import get_logger
 from hyphen.base_object import RESTModel
-from hyphen.base_factory import BaseFactory
 from hyphen.exceptions import AuthenticationException, HyphenApiException
 
 from hyphen.member import MemberFactory, AsyncMemberFactory
@@ -81,10 +80,11 @@ class HyphenClient:
             "client_id":client_id,
             "client_secret":client_secret,
             "impersonate_id":impersonate_id,
-            "debug":debug
         }
         if async_:
             # IMPORTANT: organization must be the first object imported!
+            if not self.organization_id:
+                raise NotImplementedError("For the moment, organization_id must be set when using an async client")
             self.client = AsyncHTTPRequestClient(**client_args)
             self.organization = AsyncOrganizationFactory(self.client)
 
@@ -127,7 +127,7 @@ class HyphenClient:
             quote:str
 
         try:
-            quote = self.client.get("api/quote", Quote)
+            quote = await self.client.get("api/quote", Quote)
             return quote.quote is not None
         except AuthenticationException as e:
             self.logger.error(e)
@@ -135,7 +135,6 @@ class HyphenClient:
         except AttributeError as e:
             self.logger.error(e)
             raise e
-
 
     def healthcheck(self) -> bool:
         """Returns true if the client is healthy, false otherwise"""
@@ -177,7 +176,6 @@ class HTTPRequestClient:
                  client_id: Optional[str]=None,
                  client_secret: Optional[str]=None,
                  impersonate_id: Optional[str]=None,
-                 debug: Optional[bool]=False,
                  timeout: Optional[float]=5.0):
 
         self.hyphen_client = hyphen_client
@@ -203,57 +201,17 @@ class HTTPRequestClient:
         self.client.close()
 
     def healthcheck(self)-> bool:
-        with self.client() as api:
-            return api.get("/healthcheck").status_code == 200
+        return self.client.get("/healthcheck").status_code == 200
 
     def get(self, path:str, model:"RESTModel"):
         self.logger.debug("getting GET %s", path)
         response = self.client.get(path)
-        self.logger.debug("response status code %s", response.status_code)
-        if response.status_code in (401, 403,):
-            raise AuthenticationException(response.status_code)
-        if round(response.status_code, -2) != 200:
-            self.logger.debug(
-                "Unexpected response status code from Hyphen.ai: response.status_code=%s, response.text=%s, path=%s",
-                response.status_code,
-                response.text,
-                path,
-            )
-            raise HyphenApiException(response.status_code, response.text)
-        self.logger.debug("generating response model...")
-        if not response.text:
-            return None
-        response_values = response.json()
-        if isinstance(response_values, list):
-            response_values = {"data": response_values}
-        try:
-            return model.model_validate(response_values)
-        except ValidationError as e:
-            self.logger.error("Unexpected response body from Hyphen.ai: %s", response_values)
-            raise e
+        return self._handle_response(response, path=path, model=model)
 
     def post(self, path:str, model:"BaseModel", instance:"RESTModel"):
         instance_json = instance.model_dump_json(exclude_unset=True, by_alias=True)
         response = self.client.post(path, data=instance_json)
-        if response.status_code in (401, 403,):
-            raise AuthenticationException(response.status_code)
-        if round(response.status_code, -2) != 200:
-            self.logger.debug(
-                "Unexpected response status code from Hyphen.ai: response.status_code=%s, response.text=%s, path=%s, instance=%s",
-                response.status_code,
-                response.text,
-                path,
-                instance_json
-            )
-            raise HyphenApiException(response.status_code, response.text)
-        response_values = response.json()
-        if isinstance(response_values, list):
-            response_values = {"data": response_values}
-        try:
-            return model.model_validate(response_values)
-        except ValidationError as e:
-            self.logger.error("Unexpected response body from Hyphen.ai: %s", response_values)
-            raise e
+        return self._handle_response(response, path, model, instance)
 
     def put(self,
             path:str,
@@ -261,6 +219,13 @@ class HTTPRequestClient:
             instance:Optional["RESTModel"]=None):
         instance_json = instance.model_dump_json(exclude_unset=True, by_alias=True)
         response = self.client.put(path, data=instance_json)
+        return self._handle_response(response, path=path, model=model, instance=instance)
+
+    def _handle_response(self,
+                        response:"httpx.Response",
+                        path:Optional[str]=None,
+                        model:Optional["RESTModel"]=None,
+                        instance:Optional["RESTModel"]=None):
         if response.status_code in (401, 403,):
             raise AuthenticationException(response.status_code)
         if round(response.status_code, -2) != 200:
@@ -269,9 +234,10 @@ class HTTPRequestClient:
                 response.status_code,
                 response.text,
                 path,
-                instance_json
+                instance,
             )
             raise HyphenApiException(response.status_code, response.text)
+        self.logger.debug("generating response model...")
         if not any((response.text, model,)):
             return None
         response_values = response.json()
@@ -283,31 +249,32 @@ class HTTPRequestClient:
             self.logger.error("Unexpected response body from Hyphen.ai: %s", response_values)
             raise e
 
+
+
 class AsyncHTTPRequestClient(HTTPRequestClient):
-    client: "AsyncGenerator[httpx.AsyncClient]"
+    client: "httpx.AsyncClient"
 
     def _set_client(self,host:AnyHttpUrl, timeout:int):
         """allows for opaque connection pooling"""
-        async def get_client():
-            async with httpx.AsyncClient(base_url=host, headers=self.headers, timeout=timeout) as client:
-                yield client
-        self.client = get_client
+        self.client = httpx.AsyncClient(base_url=host, headers=self.headers, timeout=timeout) as client:
 
     async def healthcheck(self)-> bool:
-        async with self.client() as api:
-            return await api.get("/healthcheck").status_code == 200
+        return await self.client.get("/healthcheck").status_code == 200
 
-    async def get(self, path:str, model:BaseModel):
-        self.logger.debug("async getting GET %s", path)
+    async def get(self, path:str, model:"RESTModel"):
+        self.logger.debug("getting GET %s", path)
         response = await self.client.get(path)
-        self.logger.debug("async response status code %s", response.status_code)
-        if response.status_code in (401, 403,):
-            raise AuthenticationException(response.status_code)
-        self.logger.debug("async generating response model...")
-        return model.model_validate_json(response.text)
+        return self._handle_response(response, path=path, model=model)
 
-    async def post(self, path:str, model:BaseModel, **kwargs):
-        response = await self.client.post(path, json=kwargs)
-        if response.status_code in (401, 403,):
-            raise AuthenticationException(response.status_code)
-        return model.model_validate_json(response.text)
+    async def post(self, path:str, model:"BaseModel", instance:"RESTModel"):
+        instance_json = instance.model_dump_json(exclude_unset=True, by_alias=True)
+        response = await self.client.post(path, data=instance_json)
+        return self._handle_response(response, path, model, instance)
+
+    async def put(self,
+            path:str,
+            model:Optional["BaseModel"]=None,
+            instance:Optional["RESTModel"]=None):
+        instance_json = instance.model_dump_json(exclude_unset=True, by_alias=True)
+        response = await self.client.put(path, data=instance_json)
+        return self._handle_response(response, path=path, model=model, instance=instance)
