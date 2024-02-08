@@ -256,7 +256,7 @@ class AsyncHTTPRequestClient(HTTPRequestClient):
 
     def _set_client(self,host:AnyHttpUrl, timeout:int):
         """allows for opaque connection pooling"""
-        self.client = httpx.AsyncClient(base_url=host, headers=self.headers, timeout=timeout) as client:
+        self.client = httpx.AsyncClient(base_url=host, headers=self.headers, timeout=timeout)
 
     async def healthcheck(self)-> bool:
         return await self.client.get("/healthcheck").status_code == 200
