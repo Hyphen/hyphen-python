@@ -248,6 +248,9 @@ class HTTPRequestClient:
         except JSONDecodeError as e:
             self.logger.error("Unexpected response body from Hyphen.ai that could not be decoded as valid json: %s", response.text)
             raise e
+        except Exception as e:
+            self.logger.error("Another, unknown error occurred while parsing response body from Hyphen.ai: %s, %s", response.text, e)
+            raise e
         if isinstance(response_values, list):
             self.logger.debug("wrapping response list with 'data' key...")
             response_values = {"data": response_values}
