@@ -1,5 +1,6 @@
 from pydantic import AnyHttpUrl, BaseModel, ValidationError
 import httpx
+from json.decoder import JSONDecodeError
 from typing import Optional, Union, AsyncGenerator, Generator, TYPE_CHECKING
 
 from hyphen.loggers.hyphen_logger import get_logger
@@ -241,7 +242,12 @@ class HTTPRequestClient:
         if not all((response.text, model,)):
             self.logger.debug("No response body or model to validate, returning None")
             return None
-        response_values = response.json()
+        self.logger.debug("Parsing api response json...")
+        try:
+            response_values = response.json()
+        except JSONDecodeError as e:
+            self.logger.error("Unexpected response body from Hyphen.ai that could not be decoded as valid json: %s", response.text)
+            raise e
         if isinstance(response_values, list):
             response_values = {"data": response_values}
         try:
