@@ -1,7 +1,7 @@
 from pydantic import AnyHttpUrl, BaseModel, ValidationError
 import httpx
 from json.decoder import JSONDecodeError
-from typing import Optional, Union, AsyncGenerator, Generator, TYPE_CHECKING
+from typing import Optional, Union, TYPE_CHECKING
 
 from hyphen.loggers.hyphen_logger import get_logger
 from hyphen.base_object import RESTModel
@@ -164,7 +164,7 @@ class HyphenClient:
 class HTTPRequestClient:
     host: "httpx.URL"
     hyphen_client: "HyphenClient"
-    client: "Generator[httpx.Client]"
+    client: "httpx.Client"
     headers:dict = {
         "Content-Type": "application/json",
         "Accept": "application/json",
@@ -230,6 +230,24 @@ class HTTPRequestClient:
         self.logger.debug("PUT response complete: %s", handled)
         return handled
 
+    def patch(self,
+            path:str,
+            model:"BaseModel",
+            instance:"RESTModel"):
+        self.logger.debug("PATCH %s", path)
+        instance_json = instance.model_dump_json(exclude_unset=True, by_alias=True, exclude=("id",))
+        response = self.client.patch(path, data=instance_json)
+        handled = self._handle_response(response, path=path, model=model, instance=instance)
+        self.logger.debug("PATCH response complete: %s", handled)
+        return handled
+
+    def delete(self, path:str):
+        self.logger.debug("DELETE %s", path)
+        response = self.client.delete(path)
+        handled = self._handle_response(response, path=path)
+        self.logger.debug("DELETE response complete: %s", handled)
+        return handled
+
     def _handle_response(self,
                         response:"httpx.Response",
                         path:Optional[str]=None,
@@ -259,12 +277,18 @@ class HTTPRequestClient:
         except Exception as e:
             self.logger.error("Another, unknown error occurred while parsing response body from Hyphen.ai: %s, %s", response.text, e)
             raise e
-        if isinstance(response_values, list):
-            self.logger.debug("wrapping response list with 'data' key...")
-            response_values = {"data": response_values}
+        try:
+            response_data = response_values.get("data")
+        except AttributeError as e:
+            self.logger.error("Response from Hyphen.ai did not reflect updated 'data' pattern %s, this is no longer supported", response_values)
+            raise e
+        if isinstance(response_data, list):
+            self.logger.debug("parsing response into CollectionList instance...")
+            # collections use the legacy data wrapper
+            response_data = response_values
         try:
             self.logger.debug("parsing response into %s instance...", model.__name__)
-            parsed = model.model_validate(response_values)
+            parsed = model.model_validate(response_data)
             self.logger.debug("Parsed model %s returned", parsed)
             return parsed
         except ValidationError as e:
@@ -301,5 +325,23 @@ class AsyncHTTPRequestClient(HTTPRequestClient):
         response = await self.client.put(path, data=instance_json)
         return self._handle_response(response, path=path, model=model, instance=instance)
 
+    async def delete(self, path:str):
+        self.logger.debug("DELETE %s", path)
+        response = await self.client.delete(path)
+        handled = self._handle_response(response, path=path)
+        self.logger.debug("DELETE response complete: %s", handled)
+        return handled
+
+    async def patch(self,
+            path:str,
+            model:"BaseModel",
+            instance:"RESTModel"):
+        self.logger.debug("PATCH %s", path)
+        instance_json = instance.model_dump_json(exclude_unset=True, by_alias=True, exclude=("id",))
+        response = await self.client.patch(path, data=instance_json)
+        handled = self._handle_response(response, path=path, model=model, instance=instance)
+        self.logger.debug("PATCH response complete: %s", handled)
+        return handled
+
     async def __del__(self):
-        await self.client.close()
+        await self.client.aclose()

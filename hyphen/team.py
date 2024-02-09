@@ -34,13 +34,7 @@ class TeamFactory(BaseFactory):
         """Create a new team"""
         instance = Team(name=name)
         created = self.client.post(self.url_path, Team, instance)
-        created._member_factory = MemberFactory(self.client)
-        created._member_factory.url_path = f"{self.url_path}/{created.id}/members"
-        return created
-
-    def read(self, id:str) -> "Team":
-        """Read an team"""
-        raise NotImplementedError("Reading specific teams is not yet implemented")
+        return self._add_member_factory(created)
 
     def list(self) -> "Team":
         """List all teams available with the provided credentials.
@@ -49,10 +43,20 @@ class TeamFactory(BaseFactory):
             data: List[Team]
 
         collection = self.client.get(self.url_path, HyphenCollection)
+        updated_collection = []
         for team in collection:
-            team._member_factory = MemberFactory(self.client)
-            team._member_factory.url_path = f"{self.url_path}/{team.id}/members"
-        return collection
+            updated_collection.append(self._add_member_factory(team))
+        return updated_collection
+
+    def update(self, target:"Team") -> "Team":
+        """Update an existing team"""
+        team = super().update(target)
+        return self._add_member_factory(team)
+
+    def _add_member_factory(self, team:"Team") -> "Team":
+        team._member_factory = MemberFactory(self.client)
+        team._member_factory.url_path = f"{self.url_path}/{team.id}/members"
+        return team
 
 class AsyncTeamFactory(TeamFactory):
 
@@ -60,13 +64,7 @@ class AsyncTeamFactory(TeamFactory):
         """Create a new team"""
         instance = Team(name=name)
         created = await self.client.post(self.url_path, Team, instance)
-        created._member_factory = MemberFactory(self.client)
-        created._member_factory.url_path = f"{self.url_path}/{created.id}/members"
-        return created
-
-    async def read(self, id:str) -> "Team":
-        """Read an team"""
-        raise NotImplementedError("Reading specific teams is not yet implemented")
+        return self._add_member_factory(created)
 
     async def list(self) -> "Team":
         """List all teams available with the provided credentials.
@@ -75,7 +73,12 @@ class AsyncTeamFactory(TeamFactory):
             data: List[Team]
 
         collection = await self.client.get(self.url_path, HyphenCollection)
+        updated_collection = []
         for team in collection:
-            team._member_factory = MemberFactory(self.client)
-            team._member_factory.url_path = f"{self.url_path}/{team.id}/members"
-        return collection
+            updated_collection.append(self._add_member_factory(team))
+        return updated_collection
+
+    async def update(self, target:"Team") -> "Team":
+        """Update an existing team"""
+        team = super().update(target)
+        return await self._add_member_factory(team)

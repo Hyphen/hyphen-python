@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, List, Any
+from typing import TYPE_CHECKING, List, Any, Union, Optional
 from pydantic import BaseModel
 from abc import ABC
 
@@ -61,9 +61,19 @@ class BaseFactory(ABC):
 
         return self.client.get(self.url_path, HyphenCollection)
 
-    def delete(self, id:str) -> None:
-        f"""Delete a {self._object_class}"""
-        return self.client.delete(f"{self.url_path}/{id}")
+    def update(self, target:Any) -> "Any":
+        f"""Update a {self._object_class.__name__}. Accepts an updated instance
+        to persist.
+        """
+        def _update(target:self._object_class) -> self._object_class:
+            return self.client.patch(f"{self.url_path}/{target.id}", self._object_class, target)
+        return _update(target)
+
+    def delete(self, target:Any) -> None:
+        f"""Delete a {self._object_class.__name__}"""
+        def _delete(target:self._object_class) -> None:
+            return self.client.delete(f"{self.url_path}/{target.id}")
+        return _delete(target)
 
 
 class AsyncBaseFactory(BaseFactory):
@@ -107,6 +117,8 @@ class AsyncBaseFactory(BaseFactory):
 
         return await self.client.get(self.url_path, HyphenCollection)
 
-    async def delete(self, id:str) -> None:
-        f"""Delete a {self._object_class}"""
-        return await self.client.delete(f"{self.url_path}/{id}")
+    async def delete(self, target:Any) -> None:
+        f"""Delete a {self._object_class.__name__}"""
+        async def _delete(target:self._object_class) -> None:
+            return await self.client.delete(f"{self.url_path}/{target.id}")
+        return await _delete(target)
