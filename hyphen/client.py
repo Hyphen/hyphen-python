@@ -290,3 +290,6 @@ class AsyncHTTPRequestClient(HTTPRequestClient):
         instance_json = instance.model_dump_json(exclude_unset=True, by_alias=True)
         response = await self.client.put(path, data=instance_json)
         return self._handle_response(response, path=path, model=model, instance=instance)
+
+    async def __del__(self):
+        await self.client.close()
