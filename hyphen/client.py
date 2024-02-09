@@ -238,7 +238,7 @@ class HTTPRequestClient:
             )
             raise HyphenApiException(response.status_code, response.text)
         self.logger.debug("generating response model...")
-        if not any((response.text, model,)):
+        if not all((response.text, model,)):
             return None
         response_values = response.json()
         if isinstance(response_values, list):

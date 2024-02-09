@@ -8,8 +8,13 @@ class Organization(BaseModel):
     the [`HyphenClient`][hyphen.client.HyphenClient] will attempt to determine the correct Organization to use based on the credentials provided, but you will need to specify an
     organization id if the credentials are ambiguous.
     """
-    id: Optional[str]
+    id: Optional[str] = None
     name: str
+    phone_number: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
+    zip: Optional[str] = None
 
 class OrganizationFactory():
     url_path: str

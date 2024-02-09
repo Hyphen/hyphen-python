@@ -5,6 +5,8 @@ from hyphen.base_object import RESTModel
 from hyphen.base_factory import BaseFactory
 from hyphen.exceptions import IncorrectMethodException
 
+from hyphen.connected_accounts.slack import Slack
+
 if TYPE_CHECKING:
     from hyphen.client import HTTPRequestClient, AsyncHTTPRequestClient
 
@@ -21,10 +23,33 @@ class Member(RESTModel):
     id: Optional[str] = None
     first_name: str
     last_name: str
+    connected_accounts: Optional[List[Union[Slack, dict]]] = []
 
     def __repr__(self):
         return f"<Member: {self.first_name} {self.last_name}>"
 
+    @field_validator("connected_accounts", mode="before")
+    @classmethod
+    def parse_connected_accounts(cls, value:List) -> List[Union[Slack, dict]]:
+        if not value:
+            return []
+        parsed_accounts = []
+        for account in value:
+            if isinstance(account, Slack):
+                parsed_accounts.append(account)
+                continue
+            if account.get("type", None) == "slack":
+                parsed_accounts.append(Slack(**account))
+                continue
+            parsed_accounts.append(account)
+        return parsed_accounts
+
+    @property
+    def slack(self) -> Optional[Slack]:
+        for account in self.connected_accounts:
+            if isinstance(account, Slack):
+                return account
+        return None
 
 class MemberFactory(BaseFactory):
     _object_class = Member
