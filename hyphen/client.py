@@ -205,22 +205,30 @@ class HTTPRequestClient:
         return self.client.get("/healthcheck").status_code == 200
 
     def get(self, path:str, model:"RESTModel"):
-        self.logger.debug("getting GET %s", path)
+        self.logger.debug("GET %s", path)
         response = self.client.get(path)
-        return self._handle_response(response, path=path, model=model)
+        handled = self._handle_response(response, path=path, model=model)
+        self.logger.debug("GET response complete: %s", handled)
+        return handled
 
     def post(self, path:str, model:"BaseModel", instance:"RESTModel"):
+        self.logger.debug("POST %s", path)
         instance_json = instance.model_dump_json(exclude_unset=True, by_alias=True)
         response = self.client.post(path, data=instance_json)
-        return self._handle_response(response, path, model, instance)
+        handled = self._handle_response(response, path, model, instance)
+        self.logger.debug("POST response complete: %s", handled)
+        return handled
 
     def put(self,
             path:str,
             model:Optional["BaseModel"]=None,
             instance:Optional["RESTModel"]=None):
+        self.logger.debug("PUT %s", path)
         instance_json = instance.model_dump_json(exclude_unset=True, by_alias=True)
         response = self.client.put(path, data=instance_json)
-        return self._handle_response(response, path=path, model=model, instance=instance)
+        handled = self._handle_response(response, path=path, model=model, instance=instance)
+        self.logger.debug("PUT response complete: %s", handled)
+        return handled
 
     def _handle_response(self,
                         response:"httpx.Response",
@@ -256,7 +264,9 @@ class HTTPRequestClient:
             response_values = {"data": response_values}
         try:
             self.logger.debug("parsing response into %s instance...", model.__name__)
-            return model.model_validate(response_values)
+            parsed = model.model_validate(response_values)
+            self.logger.debug("Parsed model %s returned", parsed)
+            return parsed
         except ValidationError as e:
             self.logger.error("Unable to parse: unexpected response body from Hyphen.ai: %s", response_values)
             raise e
