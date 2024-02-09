@@ -249,11 +249,13 @@ class HTTPRequestClient:
             self.logger.error("Unexpected response body from Hyphen.ai that could not be decoded as valid json: %s", response.text)
             raise e
         if isinstance(response_values, list):
+            self.logger.debug("wrapping response list with 'data' key...")
             response_values = {"data": response_values}
         try:
+            self.logger.debug("parsing response into %s instance...", model.__name__)
             return model.model_validate(response_values)
         except ValidationError as e:
-            self.logger.error("Unexpected response body from Hyphen.ai: %s", response_values)
+            self.logger.error("Unable to parse: unexpected response body from Hyphen.ai: %s", response_values)
             raise e
 
 
