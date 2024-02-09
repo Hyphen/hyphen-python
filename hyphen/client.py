@@ -239,6 +239,7 @@ class HTTPRequestClient:
             raise HyphenApiException(response.status_code, response.text)
         self.logger.debug("generating response model...")
         if not all((response.text, model,)):
+            self.logger.debug("No response body or model to validate, returning None")
             return None
         response_values = response.json()
         if isinstance(response_values, list):
