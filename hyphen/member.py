@@ -66,12 +66,11 @@ class MemberFactory(BaseFactory):
         return self.client.put(self.url_path,
                                instance=MemberIdsReference(member_ids=member))
 
-    def remove(self, member: Union["Member",str]) -> None:
+    def remove(self, member: "Member") -> None:
         """Remove a member from the team"""
         if "team" not in self.url_path:
             raise IncorrectMethodException("To delete a Member from an Organization, use `client.member.delete()`. To remove a Member from a Team, use `team.member.remove()`.")
-        return self.client.delete(self.url_path,
-                                  instance=MemberIdsReference(member_ids=member))
+        return self.client.delete(f"{self.url_path}/{member.id}")
 
 class AsyncMemberFactory(MemberFactory):
 
