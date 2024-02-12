@@ -4,7 +4,6 @@ import sys
 
 LOGGING = {
     "version": 1,
-    "disable_existing_loggers": True,
     "formatters": {
         "verbose": {
             "format": "%(asctime)s %(name)-12s %(levelname)-8s %(message)s",
