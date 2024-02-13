@@ -278,17 +278,8 @@ class HTTPRequestClient:
             self.logger.error("Another, unknown error occurred while parsing response body from Hyphen.ai: %s, %s", response.text, e)
             raise e
         try:
-            response_data = response_values.get("data")
-        except AttributeError as e:
-            self.logger.error("Response from Hyphen.ai did not reflect updated 'data' pattern %s, this is no longer supported", response_values)
-            raise e
-        if isinstance(response_data, list):
-            self.logger.debug("parsing response into CollectionList instance...")
-            # collections use the legacy data wrapper
-            response_data = response_values
-        try:
             self.logger.debug("parsing response into %s instance...", model.__name__)
-            parsed = model.model_validate(response_data)
+            parsed = model.model_validate(response_values)
             self.logger.debug("Parsed model %s returned", parsed)
             return parsed
         except ValidationError as e:
