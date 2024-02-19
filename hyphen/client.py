@@ -1,4 +1,5 @@
 from pydantic import AnyHttpUrl, BaseModel, ValidationError
+from datetime import datetime
 import httpx
 from json.decoder import JSONDecodeError
 from typing import Optional, Union, TYPE_CHECKING
@@ -6,6 +7,7 @@ from typing import Optional, Union, TYPE_CHECKING
 from hyphen.loggers.hyphen_logger import get_logger
 from hyphen.base_object import RESTModel
 from hyphen.exceptions import AuthenticationException, HyphenApiException
+from hyphen.auth import Auth
 
 from hyphen.member import MemberFactory, AsyncMemberFactory
 from hyphen.movie_quote import MovieQuoteFactory, AsyncMovieQuoteFactory
@@ -169,6 +171,8 @@ class HTTPRequestClient:
         "Content-Type": "application/json",
         "Accept": "application/json",
     }
+    _m2m_credentials: Optional[tuple[str, str]] = None
+    _auth_token_expires: Optional[float] = 0.0
 
     def __init__(self,
                  hyphen_client: "HyphenClient",
@@ -186,12 +190,41 @@ class HTTPRequestClient:
         if legacy_api_key:
             self.logger.debug("Using legacy API key for authentication")
             self.headers["x-api-key"] = legacy_api_key
+        elif (client_id and client_secret):
+            self.logger.debug("Using client id and secret for m2m authentication")
+            self._m2m_credentials = (client_id, client_secret,)
         else:
-            raise NotImplementedError("M2M authentication is not yet supported")
+            raise NotImplementedError("OAuth is not supported, you must provide m2m or legacy credentials to authenticate with Hyphen.ai.")
+
         if impersonate_id:
             self.logger.debug("Impersonating user %s", impersonate_id)
-            self.headers["x-impersonate-id"] = impersonate_id
+            self.headers["x-hyphen-impersonate"] = impersonate_id
         self._set_client(host, timeout)
+
+    def auth_expired(self) -> bool:
+        """is the current auth token expired? One minute buffer."""
+        # can't be expired if youre not using m2m
+        return (self._m2m_credentials and (self._auth_token_expires < (datetime.now().timestamp() + 60)))
+
+    def _refresh_m2m_token(self):
+        """refreshes a token if it is expired"""
+        self.logger.debug("Refreshing m2m token...")
+        client_id, client_secret = self._m2m_credentials
+        response = httpx.post(
+            f"{self.host}/api/oauth/token",
+            data={
+                "clientId": client_id,
+                "clientSecret": client_secret,
+            },
+        )
+        if response.status_code != 200:
+            self.logger.error("Unable to refresh auth token: %s", response.text)
+            raise AuthenticationException(response.status_code)
+        auth = Auth.model_validate_json(response.json())
+        self._auth_token_expires = auth.expires_at.timestamp()
+        self.headers["Authorization"] = f"Bearer {auth.access_token}"
+        self.logger.debug("M2M token refreshed")
+
 
     def _set_client(self,host:AnyHttpUrl, timeout:int):
         """allows for opaque connection pooling"""
@@ -206,6 +239,8 @@ class HTTPRequestClient:
 
     def get(self, path:str, model:"RESTModel"):
         self.logger.debug("GET %s", path)
+        if self.auth_expired():
+            self._refresh_m2m_token()
         response = self.client.get(path)
         handled = self._handle_response(response, path=path, model=model)
         self.logger.debug("GET response complete: %s", handled)
@@ -213,6 +248,8 @@ class HTTPRequestClient:
 
     def post(self, path:str, model:"BaseModel", instance:"RESTModel"):
         self.logger.debug("POST %s", path)
+        if self.auth_expired():
+            self._refresh_m2m_token()
         instance_json = instance.model_dump_json(exclude_unset=True, by_alias=True)
         response = self.client.post(path, data=instance_json)
         handled = self._handle_response(response, path, model, instance)
@@ -225,6 +262,8 @@ class HTTPRequestClient:
             instance:Optional["RESTModel"]=None):
         self.logger.debug("PUT %s", path)
         instance_json = instance.model_dump_json(exclude_unset=True, by_alias=True)
+        if self.auth_expired():
+            self._refresh_m2m_token()
         response = self.client.put(path, data=instance_json)
         handled = self._handle_response(response, path=path, model=model, instance=instance)
         self.logger.debug("PUT response complete: %s", handled)
@@ -236,6 +275,8 @@ class HTTPRequestClient:
             instance:"RESTModel"):
         self.logger.debug("PATCH %s", path)
         instance_json = instance.model_dump_json(exclude_unset=True, by_alias=True, exclude=("id",))
+        if self.auth_expired():
+            self._refresh_m2m_token()
         response = self.client.patch(path, data=instance_json)
         handled = self._handle_response(response, path=path, model=model, instance=instance)
         self.logger.debug("PATCH response complete: %s", handled)
@@ -243,6 +284,8 @@ class HTTPRequestClient:
 
     def delete(self, path:str):
         self.logger.debug("DELETE %s", path)
+        if self.auth_expired():
+            self._refresh_m2m_token()
         response = self.client.delete(path)
         handled = self._handle_response(response, path=path)
         self.logger.debug("DELETE response complete: %s", handled)
