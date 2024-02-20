@@ -64,12 +64,12 @@ class HyphenClient:
         return "Hello World!"
 
     def __init__(self,
+                 organization_id: str,
                  host: Optional[AnyHttpUrl]=None,
                  legacy_api_key: Optional[str]=None,
                  client_id: Optional[str]=None,
                  client_secret: Optional[str]=None,
                  impersonate_id: Optional[str]=None,
-                 organization_id: Optional[str]=None,
                  debug: Optional[bool]=False,
                  async_:Optional[bool]=False,) -> str:
 
@@ -87,8 +87,6 @@ class HyphenClient:
         }
         if async_:
             # IMPORTANT: organization must be the first object imported!
-            if not self.organization_id:
-                raise NotImplementedError("For the moment, organization_id must be set when using an async client")
             self.client = AsyncHTTPRequestClient(**client_args)
             self.organization = AsyncOrganizationFactory(self.client)
 
@@ -228,7 +226,7 @@ class HTTPRequestClient:
             raise AuthenticationException(response.text)
         auth = Auth.model_validate_json(response.text)
         self._auth_token_expires = auth.expires_at.timestamp()
-        self.headers["Authorization"] = f"Bearer {auth.access_token}"
+        self.client.headers["Authorization"] = f"Bearer {auth.access_token}"
         self.logger.debug("M2M token refreshed")
 
 
@@ -367,7 +365,7 @@ class AsyncHTTPRequestClient(HTTPRequestClient):
             raise AuthenticationException(response.text)
         auth = Auth.model_validate_json(response.text)
         self._auth_token_expires = auth.expires_at.timestamp()
-        self.headers["Authorization"] = f"Bearer {auth.access_token}"
+        self.client.headers["Authorization"] = f"Bearer {auth.access_token}"
         self.logger.debug("M2M token refreshed")
 
     async def healthcheck(self)-> bool:

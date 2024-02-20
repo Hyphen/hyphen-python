@@ -27,19 +27,8 @@ class BaseFactory(ABC):
 
     def __init__(self, client:"HTTPRequestClient"):
         """Initialize the object factory.
-
-        Note: The first time any object is initilized it will check to see if `hyphen_client.organization_id` is set.
-            If it is not, the factory will attempt to set it by polling Hyphen.ai for the organization associated with the credentials.
-            This is required because most operations must be scoped to an Organization.
         """
         self.client = client
-        if self.client.hyphen_client.organization_id is None:
-            authorized_orgnaizations = self.client.hyphen_client.organization.list()
-            org_count = len(authorized_orgnaizations.data)
-            if org_count != 1:
-                raise AmbiguousOrganizationException(("Attempt to implicitly determine organization for given credentials failed. "
-                                                      f"Hyphen.ai returned {org_count} organizations authorized by these credentails."))
-            self.client.hyphen_client.organization_id = self.client.hyphen_client.organization.list()[0].id
 
     def create(self, **kwargs) -> "Any":
         f"""Create a new {str(self._object_class)}, within the context of the current organization"""
@@ -83,19 +72,8 @@ class AsyncBaseFactory(BaseFactory):
 
     async def __init__(self, client:"HTTPRequestClient"):
         """Initialize the object factory.
-
-        Note: The first time any object is initilized it will check to see if `hyphen_client.organization_id` is set.
-            If it is not, the factory will attempt to set it by polling Hyphen.ai for the organization associated with the credentials.
-            This is required because most operations must be scoped to an Organization.
         """
         self.client = client
-        if self.client.hyphen_client.organization_id is None:
-            authorized_orgnaizations = await self.client.hyphen_client.organization.list()
-            org_count = len(authorized_orgnaizations.data)
-            if org_count != 1:
-                raise AmbiguousOrganizationException(("Attempt to implicitly determine organization for given credentials failed. "
-                                                      f"Hyphen.ai returned {org_count} organizations authorized by these credentails."))
-            self.client.hyphen_client.organization_id = self.client.hyphen_client.organization.list()[0].id
 
     async def create(self, **kwargs) -> "Any":
         f"""Create a new {str(self._object_class)}, within the context of the current organization"""

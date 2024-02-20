@@ -1,5 +1,10 @@
-from typing import Optional, List
+from typing import Optional, List, TYPE_CHECKING
 from pydantic import BaseModel
+from hyphen.base_factory import BaseFactory
+
+
+if TYPE_CHECKING:
+    from hyphen.client import HTTPRequestClient, AsyncHTTPRequestClient
 
 class Organization(BaseModel):
     """A company or group representation within the Hyphen.ai API.
@@ -16,22 +21,13 @@ class Organization(BaseModel):
     state: Optional[str] = None
     zip: Optional[str] = None
 
-class OrganizationFactory():
+class OrganizationFactory(BaseFactory):
     url_path: str
+    _object_class = Organization
 
-    def __init__(self, client):
-        """Note: Organization is the only factory that does not inherit from `BaseFactory` because it is used to determine the organization associated with the credentials."""
-        self.client = client
+    def __init__(self, client:"HTTPRequestClient"):
+        super().__init__(client)
         self.url_path = "api/organizations"
-
-    def create(self, name:str) -> "Organization":
-        """Create a new organization"""
-        instance = Organization(name=name)
-        return self.client.post(self.url_path, Organization, instance)
-
-    def read(self, id:str) -> "Organization":
-        """Read an organization"""
-        return self.client.get(f"{self.url_path}/{id}", Organization)
 
     def list(self) -> "Organization":
         """List all organizations available with the provided credentials.
@@ -50,14 +46,8 @@ class OrganizationFactory():
 
 class AsyncOrganizationFactory(OrganizationFactory):
 
-    async def create(self, name:str) -> "Organization":
-        """Create a new organization"""
-        instance = Organization(name=name)
-        return self.client.post(self.url_path, Organization, instance)
-
-    async def read(self, id:str) -> "Organization":
-        """Read an organization"""
-        return await self.client.get(f"{self.url_path}/{id}", Organization)
+    def __init__(self, client:"AsyncHTTPRequestClient"):
+        super().__init__(client)
 
     async def list(self) -> "Organization":
         """List all organizations"""
