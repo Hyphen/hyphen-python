@@ -1,6 +1,6 @@
 interactions:
 - request:
-    body: '{"clientId": "chat", "clientSecret": "VvyvtlebsAqXEwALPPCFLHCBIH4Ec9n5"}'
+    body: '{"clientId": "xxxx", "clientSecret": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}'
     headers:
       accept:
       - application/json
