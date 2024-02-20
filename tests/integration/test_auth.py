@@ -12,10 +12,9 @@ class TestAuth:
     @m.vcr
     @m.context("and using a valid legacy API key")
     @m.it("should authenticate successfully")
-    def test_api_key_happy_path(self):
-        """Test m2m authentication with a valid legacy API key"""
+    def test_m2m_happy_path(self):
+        """Test m2m authentication with a valid key set"""
         hyphen = HyphenClient(
-            legacy_api_key=settings.legacy_api_key,
             host=settings.development_hyphen_uri)
 
         assert hyphen.authenticated
@@ -30,5 +29,11 @@ class TestAuth:
 
         hyphen = HyphenClient(
             legacy_api_key="xxxx-xxxx-xxxx-xxxx",
+            host=settings.development_hyphen_uri)
+        assert not hyphen.authenticated
+
+        hyphen = HyphenClient(
+            client_id="xxxx-xxxx-xxxx-xxxx",
+            client_secret="xxxx-xxxx",
             host=settings.development_hyphen_uri)
         assert not hyphen.authenticated

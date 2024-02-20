@@ -1,0 +1,98 @@
+interactions:
+- request:
+    body: '{"clientId": "chat", "clientSecret": "VvyvtlebsAqXEwALPPCFLHCBIH4Ec9n5"}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '72'
+      content-type:
+      - application/json
+      host:
+      - engine.dev.hyphen.ai
+      user-agent:
+      - python-httpx/0.26.0
+    method: POST
+    uri: https://engine.dev.hyphen.ai/api/auth/m2m
+  response:
+    body:
+      string: !!binary |
+        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
+        3wAAAP//AwDIAmQm3wkAAA==
+    headers:
+      CF-Cache-Status:
+      - DYNAMIC
+      CF-RAY:
+      - 8587f5930ae88ce0-EWR
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Tue, 20 Feb 2024 15:59:53 GMT
+      NEL:
+      - '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'
+      Report-To:
+      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v3?s=O9JFW4vRGkJ2QDf0oMYOfMIjYgaYCfdFzPKxh%2BQRhuiEWIRr1qkFxDDf%2BujA6V5%2B4tjLSf8407ZvQSUtmdXjhmJw6%2Ftv7iaBhrxKahLoqwhg2BmXTmohA%2FbGtWwm0dbLX7lAXQUJ"}],"group":"cf-nel","max_age":604800}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      access-control-allow-origin:
+      - '*'
+      origin-agent-cluster:
+      - ?1
+      referrer-policy:
+      - no-referrer
+      strict-transport-security:
+      - max-age=15552000; includeSubDomains
+      vary:
+      - Origin
+      x-content-type-options:
+      - nosniff
+      x-dns-prefetch-control:
+      - 'off'
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - '0'
+    status:
+      code: 200
+      message: OK
+version: 1

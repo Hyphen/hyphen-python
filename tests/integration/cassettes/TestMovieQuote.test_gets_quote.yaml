@@ -1,6 +1,6 @@
 interactions:
 - request:
-    body: ''
+    body: '{"clientId": "chat", "clientSecret": "VvyvtlebsAqXEwALPPCFLHCBIH4Ec9n5"}'
     headers:
       accept:
       - application/json
@@ -8,26 +8,52 @@ interactions:
       - gzip, deflate
       connection:
       - keep-alive
+      content-length:
+      - '72'
       content-type:
       - application/json
       host:
       - engine.dev.hyphen.ai
       user-agent:
       - python-httpx/0.26.0
-      x-api-key:
-      - xxxx-xxxx-xxxx-xxxx
-    method: GET
-    uri: https://engine.dev.hyphen.ai/api/quote
+    method: POST
+    uri: https://engine.dev.hyphen.ai/api/auth/m2m
   response:
     body:
       string: !!binary |
-        H4sIAAAAAAAAA6pWKizNL0lVslLySK3UUUhOLEpNK83RUchNzNNRKMlILUpVL1ZIVEhKLUstSkxP
-        VQCJKCrVAgAAAP//AwB9U44WNwAAAA==
+        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
+        AgAA//8DAJwQELnfCQAA
     headers:
       CF-Cache-Status:
       - DYNAMIC
       CF-RAY:
-      - 850c5dc7187678e8-EWR
+      - 8587f5983e9a43a0-EWR
       Connection:
       - keep-alive
       Content-Encoding:
@@ -35,19 +61,37 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       Date:
-      - Mon, 05 Feb 2024 16:00:26 GMT
+      - Tue, 20 Feb 2024 15:59:53 GMT
       NEL:
       - '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'
       Report-To:
-      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v3?s=ksEPqf7nSsDdyd8Fy3vNOjBrnFTOubLg2oH6CPD8Q8bvuQVT92EsRtGwvZbwYY5ww4tfZ%2FfSYIi4aGHfLE3OdG57NACTVO%2BXjv9LZNHHRDBxZI2DrYDoNjJvGvpzESenQSoGYxPo"}],"group":"cf-nel","max_age":604800}'
+      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v3?s=i1Ek04O6d8q%2FNP9QOyDNllj6ko%2BDdGtmpyPxamiEHSrXDf3dpfFkxbLtys4IfK9fGW9n6zFw%2BNlki7%2F5YAF6wYJIsViaQaRxoocgOo%2FCBNE3Qp3aWOirKZsEJoMdE4VkAzkDwEaW"}],"group":"cf-nel","max_age":604800}'
       Server:
       - cloudflare
       Transfer-Encoding:
       - chunked
       access-control-allow-origin:
       - '*'
+      origin-agent-cluster:
+      - ?1
+      referrer-policy:
+      - no-referrer
+      strict-transport-security:
+      - max-age=15552000; includeSubDomains
       vary:
       - Origin
+      x-content-type-options:
+      - nosniff
+      x-dns-prefetch-control:
+      - 'off'
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - SAMEORIGIN
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - '0'
     status:
       code: 200
       message: OK

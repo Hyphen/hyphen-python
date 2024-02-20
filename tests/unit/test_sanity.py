@@ -13,7 +13,6 @@ class TestSanity:
     def test_check_dev_setup(self):
         """Test that the dev setup is working"""
         hyphen = HyphenClient(
-            legacy_api_key=settings.local_api_key,
             host=settings.local_hyphen_uri)
         assert hyphen.authenticated
         assert hyphen.healthcheck()

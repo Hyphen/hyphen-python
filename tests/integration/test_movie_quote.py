@@ -12,7 +12,6 @@ class TestMovieQuote:
     @m.it("should get a movie quote")
     def test_gets_quote(self):
         hyphen = HyphenClient(
-            legacy_api_key=settings.legacy_api_key,
             host=settings.development_hyphen_uri)
         quote = hyphen.movie_quote.get()
         assert quote.quote == "Hey, careful, man, there's a beverage here!"

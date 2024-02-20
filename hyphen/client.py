@@ -8,6 +8,7 @@ from hyphen.loggers.hyphen_logger import get_logger
 from hyphen.base_object import RESTModel
 from hyphen.exceptions import AuthenticationException, HyphenApiException
 from hyphen.auth import Auth
+from hyphen.settings import settings
 
 from hyphen.member import MemberFactory, AsyncMemberFactory
 from hyphen.movie_quote import MovieQuoteFactory, AsyncMovieQuoteFactory
@@ -166,7 +167,7 @@ class HyphenClient:
 class HTTPRequestClient:
     host: "httpx.URL"
     hyphen_client: "HyphenClient"
-    client: "httpx.Client"
+    client: Optional["httpx.Client"] = None
     headers:dict = {
         "Content-Type": "application/json",
         "Accept": "application/json",
@@ -185,14 +186,15 @@ class HTTPRequestClient:
 
         self.hyphen_client = hyphen_client
         self.logger = self.hyphen_client.logger
-        assert legacy_api_key or (client_id and client_secret), "You must provide either a legacy API key or a client id and secret to authenticate with Hyphen.ai"
-
-        if legacy_api_key:
+        if (settings.hyphen_client_id and settings.hyphen_client_secret):
+            self.logger.debug("Using ENV settings for m2m authentication")
+            self._m2m_credentials = (settings.hyphen_client_id, settings.hyphen_client_secret,)
+        elif (client_id and client_secret):
+            self.logger.debug("Using user provided creds for m2m authentication")
+            self._m2m_credentials = (client_id, client_secret,)
+        elif legacy_api_key:
             self.logger.debug("Using legacy API key for authentication")
             self.headers["x-api-key"] = legacy_api_key
-        elif (client_id and client_secret):
-            self.logger.debug("Using client id and secret for m2m authentication")
-            self._m2m_credentials = (client_id, client_secret,)
         else:
             raise NotImplementedError("OAuth is not supported, you must provide m2m or legacy credentials to authenticate with Hyphen.ai.")
 
@@ -210,17 +212,21 @@ class HTTPRequestClient:
         """refreshes a token if it is expired"""
         self.logger.debug("Refreshing m2m token...")
         client_id, client_secret = self._m2m_credentials
-        response = httpx.post(
-            f"{self.host}/api/oauth/token",
-            data={
+        try:
+            del self.client.headers["Authorization"]
+        except KeyError:
+            pass
+        response = self.client.post(
+            "/api/auth/m2m",
+            json={
                 "clientId": client_id,
                 "clientSecret": client_secret,
             },
         )
         if response.status_code != 200:
             self.logger.error("Unable to refresh auth token: %s", response.text)
-            raise AuthenticationException(response.status_code)
-        auth = Auth.model_validate_json(response.json())
+            raise AuthenticationException(response.text)
+        auth = Auth.model_validate_json(response.text)
         self._auth_token_expires = auth.expires_at.timestamp()
         self.headers["Authorization"] = f"Bearer {auth.access_token}"
         self.logger.debug("M2M token refreshed")
@@ -232,7 +238,8 @@ class HTTPRequestClient:
         self.client = httpx.Client(base_url=str(host), headers=self.headers, timeout=timeout)
 
     def __del__(self):
-        self.client.close()
+        if self.client:
+            self.client.close()
 
     def healthcheck(self)-> bool:
         return self.client.get("/healthcheck").status_code == 200

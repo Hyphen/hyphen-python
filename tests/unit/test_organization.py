@@ -16,7 +16,6 @@ class TestOrganization:
     def client(self):
         """Return a HyphenClient instance"""
         hyphen = HyphenClient(
-            legacy_api_key=settings.local_api_key,
             host=settings.local_hyphen_uri)
         return hyphen
 
