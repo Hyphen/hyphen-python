@@ -242,6 +242,8 @@ class HTTPRequestClient:
             self.client.close()
 
     def healthcheck(self)-> bool:
+        if self.auth_expired():
+            self._refresh_m2m_token()
         return self.client.get("/healthcheck").status_code == 200
 
     def get(self, path:str, model:"RESTModel"):
@@ -339,22 +341,51 @@ class HTTPRequestClient:
 
 
 class AsyncHTTPRequestClient(HTTPRequestClient):
-    client: "httpx.AsyncClient"
+    client: Optional["httpx.AsyncClient"] = None
 
     def _set_client(self,host:AnyHttpUrl, timeout:int):
         """allows for opaque connection pooling"""
         self.client = httpx.AsyncClient(base_url=host, headers=self.headers, timeout=timeout)
 
+    async def _refresh_m2m_token(self):
+        """refreshes a token if it is expired"""
+        self.logger.debug("Refreshing m2m token...")
+        client_id, client_secret = self._m2m_credentials
+        try:
+            del self.client.headers["Authorization"]
+        except KeyError:
+            pass
+        response = await self.client.post(
+            "/api/auth/m2m",
+            json={
+                "clientId": client_id,
+                "clientSecret": client_secret,
+            },
+        )
+        if response.status_code != 200:
+            self.logger.error("Unable to refresh auth token: %s", response.text)
+            raise AuthenticationException(response.text)
+        auth = Auth.model_validate_json(response.text)
+        self._auth_token_expires = auth.expires_at.timestamp()
+        self.headers["Authorization"] = f"Bearer {auth.access_token}"
+        self.logger.debug("M2M token refreshed")
+
     async def healthcheck(self)-> bool:
+        if self.auth_expired():
+            await self._refresh_m2m_token()
         return await self.client.get("/healthcheck").status_code == 200
 
     async def get(self, path:str, model:"RESTModel"):
         self.logger.debug("getting GET %s", path)
+        if self.auth_expired():
+            await self._refresh_m2m_token()
         response = await self.client.get(path)
         return self._handle_response(response, path=path, model=model)
 
     async def post(self, path:str, model:"BaseModel", instance:"RESTModel"):
         instance_json = instance.model_dump_json(exclude_unset=True, by_alias=True)
+        if self.auth_expired():
+            await self._refresh_m2m_token()
         response = await self.client.post(path, data=instance_json)
         return self._handle_response(response, path, model, instance)
 
@@ -363,11 +394,15 @@ class AsyncHTTPRequestClient(HTTPRequestClient):
             model:Optional["BaseModel"]=None,
             instance:Optional["RESTModel"]=None):
         instance_json = instance.model_dump_json(exclude_unset=True, by_alias=True)
+        if self.auth_expired():
+            await self._refresh_m2m_token()
         response = await self.client.put(path, data=instance_json)
         return self._handle_response(response, path=path, model=model, instance=instance)
 
     async def delete(self, path:str):
         self.logger.debug("DELETE %s", path)
+        if self.auth_expired():
+            await self._refresh_m2m_token()
         response = await self.client.delete(path)
         handled = self._handle_response(response, path=path)
         self.logger.debug("DELETE response complete: %s", handled)
@@ -379,10 +414,13 @@ class AsyncHTTPRequestClient(HTTPRequestClient):
             instance:"RESTModel"):
         self.logger.debug("PATCH %s", path)
         instance_json = instance.model_dump_json(exclude_unset=True, by_alias=True, exclude=("id",))
+        if self.auth_expired():
+            await self._refresh_m2m_token()
         response = await self.client.patch(path, data=instance_json)
         handled = self._handle_response(response, path=path, model=model, instance=instance)
         self.logger.debug("PATCH response complete: %s", handled)
         return handled
 
     async def __del__(self):
-        await self.client.aclose()
+        if self.client:
+            await self.client.aclose()
