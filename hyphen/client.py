@@ -65,7 +65,7 @@ class HyphenClient:
 
     def __init__(self,
                  organization_id: str,
-                 host: Optional[AnyHttpUrl]=None,
+                 host: Optional[AnyHttpUrl]="https://engine.hyphen.ai",
                  legacy_api_key: Optional[str]=None,
                  client_id: Optional[str]=None,
                  client_secret: Optional[str]=None,
@@ -74,7 +74,7 @@ class HyphenClient:
                  async_:Optional[bool]=False,) -> str:
 
         self.logger = logger(**{"level": "DEBUG" if debug else None})
-        self.host = httpx.URL(str(host)) or "https://engine.hyphen.ai"
+        self.host = httpx.URL(str(host))
         self.organization_id = organization_id
         self.logger.debug("Creating %s HyphenClient...", "async" if async_ else "sync")
         client_args = {
@@ -105,6 +105,29 @@ class HyphenClient:
         self.movie_quote = MovieQuoteFactory(self.client)
         self.team = TeamFactory(self.client)
         self.logger.debug("Client created.")
+
+    @property
+    def debug_profile(self) -> dict:
+        """Returns a dict of the client's current configuration to help with debugging."""
+        safe_m2m = None if not self.client._m2m_credentials else ([self.client._m2m_credentials[0], f'{self.client._m2m_credentials[1][:4]}[redacted]{self.client._m2m_credentials[1][-4:]}'])
+        auth_header = self.client.client.headers.get("Authorization", None)
+        auth_whole = None if not auth_header else str(auth_header)
+        authorization = None if not auth_whole else f"{auth_whole[:8]}[redacted]{auth_whole[-4:]}"
+        return {
+            "http_client": {
+                "client_type": self.client.__class__.__name__,
+                "auth_token_expires": self.client._auth_token_expires,
+                "m2m_credentials": safe_m2m,
+                "headers": {k: v for k, v in self.client.client.headers.items() if not k == "authorization"},
+                "authorization_header": authorization,
+
+            },
+            "host": str(self.host),
+            "organization_id": self.organization_id,
+            "on_behalf_of": self.client.client.headers.get("x-hyphen-impersonate"),
+        }
+
+
 
     @property
     def authenticated(self) -> bool:

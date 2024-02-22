@@ -32,7 +32,6 @@ class OrganizationFactory(BaseFactory):
     def list(self) -> "Organization":
         """List all organizations available with the provided credentials.
         """
-
         class OrganizationList(BaseModel):
             data: List[Organization]
 

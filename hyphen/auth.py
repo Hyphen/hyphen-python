@@ -1,3 +1,4 @@
+from typing import Optional
 from datetime import datetime
 from enum import Enum
 from pydantic import BaseModel, model_validator, Field
@@ -11,7 +12,7 @@ class Auth(BaseModel):
     expires_at: datetime = Field(..., alias="access_token_expires_at")
     token_type: Bearer
     access_token: str
-    id_token: str
+    id_token: Optional[str] = None
 
     @model_validator(mode="before")
     def set_expires(cls, v):
