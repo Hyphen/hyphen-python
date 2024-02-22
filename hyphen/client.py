@@ -189,10 +189,7 @@ class HTTPRequestClient:
     host: "httpx.URL"
     hyphen_client: "HyphenClient"
     client: Optional["httpx.Client"] = None
-    headers:dict = {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-    }
+    headers:dict = None
     _m2m_credentials: Optional[tuple[str, str]] = None
     _auth_token_expires: Optional[float] = 0.0
 
@@ -204,7 +201,10 @@ class HTTPRequestClient:
                  client_secret: Optional[str]=None,
                  impersonate_id: Optional[str]=None,
                  timeout: Optional[float]=5.0):
-
+        self.headers = {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        }
         self.hyphen_client = hyphen_client
         self.logger = self.hyphen_client.logger
         if (settings.hyphen_client_id and settings.hyphen_client_secret):
