@@ -79,16 +79,20 @@ class MemberFactory(BaseFactory):
 
     def add(self, member: Member) -> None:
         """Add a member to the team"""
-        if "team" not in self.url_path:
+        if self.role_context == "organization":
             raise IncorrectMethodException("To add a Member to an Organization, use `client.member.create()`. To add a Member to a Team, use `team.member.add()`.")
 
-        member = self.client.put(self.url_path,
+        # put responds with None now
+        _ = self.client.put(self.url_path,
                                  instance=MemberIdsReference(members=[member]))
-        return self._scope_member(member)
+        # the only way to get the full member scoped is via team list at the moment
+        for refreshed_member in self.list():
+            if member.id == refreshed_member.id:
+                return self._scope_member(refreshed_member)
 
     def remove(self, member: "Member") -> None:
         """Remove a member from the team"""
-        if "team" not in self.url_path:
+        if self.role_context == "organization":
             raise IncorrectMethodException("To delete a Member from an Organization, use `client.member.delete()`. To remove a Member from a Team, use `team.member.remove()`.")
         return self.client.delete(f"{self.url_path}/{member.id}")
 
@@ -160,16 +164,19 @@ class AsyncMemberFactory(MemberFactory):
 
     async def add(self, member: Union["Member",str]) -> None:
         """Add a member to the team"""
-        if "team" not in self.url_path:
+        if self.role_context == "organization":
             raise IncorrectMethodException("To add a Member to an Organization, use `client.member.create()`. To add a Member to a Team, use `team.member.add()`.")
 
         member = await self.client.put(self.url_path,
                                instance=MemberIdsReference(members=[member]))
-        return self._scope_member(member)
+        # the only way to get the full member scoped is via team list at the moment
+        for refreshed_member in await self.list():
+            if member.id == refreshed_member.id:
+                return self._scope_member(refreshed_member)
 
     async def remove(self, member: Union["Member"]) -> None:
         """Remove a member from the team"""
-        if "team" not in self.url_path:
+        if self.role_context == "organization":
             raise IncorrectMethodException("To delete a Member from an Organization, use `client.member.delete()`. To remove a Member from a Team, use `team.member.remove()`.")
         return await self.client.delete(f"{self.url_path}/{member.id}")
 
