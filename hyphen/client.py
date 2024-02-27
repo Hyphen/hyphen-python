@@ -312,11 +312,14 @@ class HTTPRequestClient:
         self.logger.debug("PATCH response complete: %s", handled)
         return handled
 
-    def delete(self, path:str):
+    def delete(self, path:str, instance:Optional["RESTModel"]=None):
         self.logger.debug("DELETE %s", path)
         if self.auth_expired():
             self._refresh_m2m_token()
-        response = self.client.delete(path)
+        delete_args = {}
+        if instance:
+            delete_args["data"] = instance.model_dump_json(exclude_unset=True, by_alias=True)
+        response = self.client.request("DELETE", path, **delete_args) # required to pass a body to delete in httpx
         handled = self._handle_response(response, path=path)
         self.logger.debug("DELETE response complete: %s", handled)
         return handled
