@@ -45,7 +45,8 @@ class OrganizationFactory(BaseFactory):
 
     def expunge(self, organization: "Organization") -> None:
         """Delete an organization perminantly and forever"""
-        return self.client.delete(f"{self.url_path}/api/internal/expunge/organization/{organization.id}")
+        expunge_url = f"{self.client.base_url}/api/internal/expunge/organization/{organization.id}"
+        return self.client.delete(expunge_url)
 
 
 class AsyncOrganizationFactory(OrganizationFactory):
@@ -69,4 +70,5 @@ class AsyncOrganizationFactory(OrganizationFactory):
 
     async def expunge(self, organization: "Organization") -> None:
         """Delete an organization perminantly and forever"""
-        return self.client.delete(f"{self.url_path}/api/internal/expunge/organization/{organization.id}")
+        expunge_url = f"{self.client.base_url}/api/internal/expunge/organization/{organization.id}"
+        return await self.client.delete(expunge_url)
