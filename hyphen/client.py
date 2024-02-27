@@ -456,16 +456,11 @@ class AsyncHTTPRequestClient(HTTPRequestClient):
     def __del__(self):
         """closes the async client safely"""
         if self.client:
-            self.logger.debug("Closing async client")
             try:
                 loop = get_event_loop()
                 if loop.is_running():
-                    self.logger.debug("closing async client in running event loop...")
                     loop.create_task(self.client.aclose())
                 else:
-                    self.logger.debug("closing async client in new event loop...")
                     loop.run_until_complete(self.client.aclose())
             except Exception as e:
-                self.logger.error("Error closing async client: %s", e)
                 pass
-            self.logger.debug("Async client closed")
