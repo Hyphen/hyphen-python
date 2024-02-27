@@ -164,7 +164,7 @@ class AsyncMemberFactory(MemberFactory):
             raise IncorrectMethodException("To add a Member to an Organization, use `client.member.create()`. To add a Member to a Team, use `team.member.add()`.")
 
         member = await self.client.put(self.url_path,
-                               instance=MemberIdsReference(member_ids=member))
+                               instance=MemberIdsReference(members=[member]))
         return self._scope_member(member)
 
     async def remove(self, member: Union["Member"]) -> None:
