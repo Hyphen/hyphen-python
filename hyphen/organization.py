@@ -43,6 +43,11 @@ class OrganizationFactory(BaseFactory):
 
         return self.client.get(self.url_path, OrganizationList)
 
+    def expunge(self, organization: "Organization") -> None:
+        """Delete an organization perminantly and forever"""
+        return self.client.delete(f"{self.url_path}/api/internal/expunge/organization/{organization.id}")
+
+
 class AsyncOrganizationFactory(OrganizationFactory):
 
     def __init__(self, client:"AsyncHTTPRequestClient"):
@@ -61,3 +66,7 @@ class AsyncOrganizationFactory(OrganizationFactory):
                 return self.data[item]
 
         return await self.client.get(self.url_path, OrganizationList)
+
+    async def expunge(self, organization: "Organization") -> None:
+        """Delete an organization perminantly and forever"""
+        return self.client.delete(f"{self.url_path}/api/internal/expunge/organization/{organization.id}")
