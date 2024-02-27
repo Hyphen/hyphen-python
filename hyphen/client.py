@@ -1,6 +1,7 @@
 from pydantic import AnyHttpUrl, BaseModel, ValidationError
 from datetime import datetime
 import httpx
+from asyncio import get_event_loop
 from json.decoder import JSONDecodeError
 from typing import Optional, Union, TYPE_CHECKING
 
@@ -312,7 +313,9 @@ class HTTPRequestClient:
         self.logger.debug("PATCH response complete: %s", handled)
         return handled
 
-    def delete(self, path:str, instance:Optional["RESTModel"]=None):
+    def delete(self,
+               path:str,
+               instance:Optional["RESTModel"]=None):
         self.logger.debug("DELETE %s", path)
         if self.auth_expired():
             self._refresh_m2m_token()
@@ -423,11 +426,16 @@ class AsyncHTTPRequestClient(HTTPRequestClient):
         response = await self.client.put(path, data=instance_json)
         return self._handle_response(response, path=path, model=model, instance=instance)
 
-    async def delete(self, path:str):
+    async def delete(self,
+                     path:str,
+                     instance:Optional["RESTModel"]=None):
         self.logger.debug("DELETE %s", path)
         if self.auth_expired():
             await self._refresh_m2m_token()
-        response = await self.client.delete(path)
+        delete_args = {}
+        if instance:
+            delete_args["data"] = instance.model_dump_json(exclude_unset=True, by_alias=True)
+        response = await self.client.request("DELETE", path, **delete_args) # required to pass a body to delete in httpx
         handled = self._handle_response(response, path=path)
         self.logger.debug("DELETE response complete: %s", handled)
         return handled
@@ -445,6 +453,19 @@ class AsyncHTTPRequestClient(HTTPRequestClient):
         self.logger.debug("PATCH response complete: %s", handled)
         return handled
 
-    async def __del__(self):
+    def __del__(self):
+        """closes the async client safely"""
         if self.client:
-            await self.client.aclose()
+            self.logger.debug("Closing async client")
+            try:
+                loop = get_event_loop()
+                if loop.is_running():
+                    self.logger.debug("closing async client in running event loop...")
+                    loop.create_task(self.client.aclose())
+                else:
+                    self.logger.debug("closing async client in new event loop...")
+                    loop.run_until_complete(self.client.aclose())
+            except Exception as e:
+                self.logger.error("Error closing async client: %s", e)
+                pass
+            self.logger.debug("Async client closed")

@@ -75,7 +75,7 @@ class MemberFactory(BaseFactory):
         """List all members available with the provided credentials.
         """
         members = super().list()
-        return [self.scope_member(member) for member in members]
+        return [self._scope_member(member) for member in members]
 
     def add(self, member: Member) -> None:
         """Add a member to the team"""
@@ -84,7 +84,7 @@ class MemberFactory(BaseFactory):
 
         member = self.client.put(self.url_path,
                                  instance=MemberIdsReference(members=[member]))
-        return self.scope_member(member)
+        return self._scope_member(member)
 
     def remove(self, member: "Member") -> None:
         """Remove a member from the team"""
@@ -94,18 +94,12 @@ class MemberFactory(BaseFactory):
 
     def assign_role(self, role_name: str, members:List[Member]) -> None:
         """Assign a role to a member for either a team or an organization."""
-        role = Role(name=role_name,
-                    context=self.role_context,
-                    context_id=self.role_context_id)
-        for member in members:
-            if role not in member.roles:
-                member.roles.append(role)
+        members = self._apply_role_to_members(role_name, members)
 
         # TODO: should verify the response object
         _ = self.client.put(f"{self.url_path}",
                              instance=MemberIdsReference(members=members))
-        member = [self.scope_member(member) for member in members]
-        return members
+        return [self._scope_member(member) for member in members]
 
     def revoke_role(self, role: Union[Role, str], member: Member) -> None:
         """Remove a role from a member for either a team or an organization.
@@ -126,13 +120,23 @@ class MemberFactory(BaseFactory):
     def role_context(self) -> str:
         return "team" if "team" in self.url_path else "organization"
 
-    def scope_member(self, member:"Member") -> List[Role]:
+    def _scope_member(self, member:"Member") -> List[Role]:
         """Scope roles to the current object"""
         member.roles_context = member.roles_context or self.role_context
         for role in member.roles:
             role.context = role.context or self.role_context
             role.context_id = role.context_id or self.role_context_id
         return member
+
+    def _apply_role_to_members(self, role_name:str, members:List[Member]) -> List[Member]:
+        """Apply a role to a member"""
+        role = Role(name=role_name,
+                    context=self.role_context,
+                    context_id=self.role_context_id)
+        for member in members:
+            if role not in member.roles:
+                member.roles.append(role)
+        return members
 
 class AsyncMemberFactory(MemberFactory):
 
@@ -142,16 +146,39 @@ class AsyncMemberFactory(MemberFactory):
         super().__init__(client)
         self.url_path = f"api/organizations/{self.client.hyphen_client.organization_id}/members"
 
+    async def list(self) -> List[Member]:
+        """List all members available with the provided credentials.
+        """
+        members = await super().list()
+        return [self._scope_member(member) for member in members]
+
     async def add(self, member: Union["Member",str]) -> None:
         """Add a member to the team"""
         if "team" not in self.url_path:
             raise IncorrectMethodException("To add a Member to an Organization, use `client.member.create()`. To add a Member to a Team, use `team.member.add()`.")
 
-        return await self.client.put(self.url_path,
+        member = await self.client.put(self.url_path,
                                instance=MemberIdsReference(member_ids=member))
+        return self._scope_member(member)
 
     async def remove(self, member: Union["Member"]) -> None:
         """Remove a member from the team"""
         if "team" not in self.url_path:
             raise IncorrectMethodException("To delete a Member from an Organization, use `client.member.delete()`. To remove a Member from a Team, use `team.member.remove()`.")
         return await self.client.delete(f"{self.url_path}/{member.id}")
+
+    async def assign_role(self, role_name: str, members:List[Member]) -> None:
+        """Assign a role to a member for either a team or an organization."""
+        members = self._apply_role_to_members(role_name, members)
+
+        # TODO: should verify the response object
+        _ = await self.client.put(f"{self.url_path}",
+                             instance=MemberIdsReference(members=members))
+        return [self._scope_member(member) for member in members]
+
+    async def revoke_role(self, role: Union[Role, str], member: Member) -> None:
+        if self.role_context == "organization":
+            raise NotImplementedError("Revoking roles from an organization is not yet supported.")
+
+        role_name = getattr(role, "name", role)
+        return await self.client.delete(f"{self.url_path}/{member.id}/roles", LocalizedRole(roles=[role_name]))
