@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Optional, Union, List, Literal
 from pydantic import Field, field_validator
 
 from hyphen.base_object import RESTModel
-from hyphen.base_factory import BaseFactory
+from hyphen.base_factory import BaseFactory, CollectionList
 from hyphen.exceptions import IncorrectMethodException
 from hyphen.roles import Role, LocalizedRole
 
@@ -149,7 +149,13 @@ class AsyncMemberFactory(MemberFactory):
     async def list(self) -> List[Member]:
         """List all members available with the provided credentials.
         """
-        members = await super().list()
+        # since the parent list method does not return directly (which would give us a coroutine to await)
+        # we need to redefine it to match async_base_factory here.
+
+        class HyphenCollection(CollectionList):
+            data: List[self._object_class]
+
+        members =  await self.client.get(self.url_path, HyphenCollection)
         return [self._scope_member(member) for member in members]
 
     async def add(self, member: Union["Member",str]) -> None:

@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Optional, List
 from pydantic import BaseModel
 
 from hyphen.base_factory import BaseFactory, CollectionList
-from hyphen.member import MemberFactory
+from hyphen.member import MemberFactory, AsyncMemberFactory
 
 if TYPE_CHECKING:
     from hyphen.client import HTTPRequestClient, AsyncHTTPRequestClient
@@ -54,7 +54,10 @@ class TeamFactory(BaseFactory):
         return self._add_member_factory(team)
 
     def _add_member_factory(self, team:"Team") -> "Team":
-        team._member_factory = MemberFactory(self.client)
+        if self.__class__.__name__ == "AsyncTeamFactory":
+            team._member_factory = AsyncMemberFactory(self.client)
+        else:
+            team._member_factory = MemberFactory(self.client)
         team._member_factory.url_path = f"{self.url_path}/{team.id}/members"
         return team
 
