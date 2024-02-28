@@ -49,17 +49,39 @@ def vcr_config():
 @pytest.fixture(scope="function", autouse=True)
 def reset_engine_db(settings):
     client = None
+    def replace_oids(part):
+        if isinstance(part, dict):
+            for k, v in part.items():
+                if k in ("_id","id",):
+                    part[k] = bson.ObjectId(v['oid'])
+                else:
+                    part[k] = replace_oids(v)
+        return part
     try:
         client = MongoClient(settings.test_hyphen_mongodb_uri)
         db = client.test
-        for collection in ("members", "teams", "organizations"):
+        collections = ("members", "teams", "organizations",)
+        for collection in collections:
             db[collection].delete_many({})
+        for collection in collections[::-1]:
             bulk_file = Path(__file__).parent / f"assets/foundational_test_state/{collection}.json"
             bulk = json.loads(bulk_file.read_text())
             for doc in bulk:
-                doc["_id"] = bson.ObjectId(doc["_id"]["oid"])
+                doc = replace_oids(doc)
             db[collection].insert_many(bulk)
         yield
     finally:
         if client:
             client.close()
+
+@pytest.fixture(scope="function")
+def client_args(settings):
+    """returns args for a client logged impersonating TestOrg's Owner"""
+    # see /assets/foundational_test_state for these oid values
+    return {
+        "organization_id":"65dfaa909ea1295731011c5a",
+        "impersonate_id":"65dfaa778a70bcfa248c6c03",
+        "client_id":settings.test_hyphen_client_id,
+        "client_secret":settings.test_hyphen_client_secret,
+        "host":settings.test_hyphen_url
+    }

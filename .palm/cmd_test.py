@@ -13,3 +13,4 @@ def cli(environment, k:Optional[str], failed:bool):
     failed_cmd = '--lf --last-failed-no-failures none' if failed else ''
     k = f'-k "{k}" ' if k else ''
     environment.run_in_docker(f"pytest tests {k}{failed_cmd}")
+    environment.run_in_docker("chown -R 1001 /app/tests")
