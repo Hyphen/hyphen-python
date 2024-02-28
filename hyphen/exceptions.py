@@ -22,3 +22,5 @@ class AuthenticationException(HyphenException):
             return f"Authentication failed: {self.message}"
         elif self.code == 403:
             return f"Authentication required: {self.message}"
+        else:
+            return f"Authentication failed or required: {self.message}"
