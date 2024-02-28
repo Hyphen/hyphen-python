@@ -1,0 +1,480 @@
+interactions:
+- request:
+    body: '{"clientId":"secret","clientSecret":"secret"}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '72'
+      content-type:
+      - application/json
+      host:
+      - engine:3000
+      user-agent:
+      - python-httpx/0.26.0
+    method: POST
+    uri: http://engine:3000/api/auth/m2m
+  response:
+    body:
+      string: '{"access_token":"secret", "access_token_expires_in":3600000,"id_token":"secret","access_token_expires_at":1709158652565.475,"token_type":"Bearer"}'
+    headers:
+      Connection:
+      - keep-alive
+      Date:
+      - Wed, 28 Feb 2024 21:17:32 GMT
+      Keep-Alive:
+      - timeout=72
+      Origin-Agent-Cluster:
+      - ?1
+      Referrer-Policy:
+      - no-referrer
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-DNS-Prefetch-Control:
+      - 'off'
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - '0'
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '2572'
+      content-type:
+      - application/json; charset=utf-8
+      vary:
+      - Origin
+    status:
+      code: 200
+      message: OK
+- request:
+    body: ''
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - xxxxx-xxxxx-xxxxx
+      connection:
+      - keep-alive
+      content-type:
+      - application/json
+      host:
+      - engine:3000
+      user-agent:
+      - python-httpx/0.26.0
+    method: GET
+    uri: http://engine:3000/api/organizations
+  response:
+    body:
+      string: '{"data":[{"id":"[object Object]","name":"TestOrg"},{"id":"[object Object]","name":"Org
+        Tester Should Not Have Access To"}],"total":2,"pageNum":1,"pageSize":100}'
+    headers:
+      Connection:
+      - keep-alive
+      Date:
+      - Wed, 28 Feb 2024 21:17:32 GMT
+      Keep-Alive:
+      - timeout=72
+      Origin-Agent-Cluster:
+      - ?1
+      Referrer-Policy:
+      - no-referrer
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-DNS-Prefetch-Control:
+      - 'off'
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - '0'
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '160'
+      content-type:
+      - application/json; charset=utf-8
+      vary:
+      - Origin
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"name":"Clark Inc"}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - xxxxx-xxxxx-xxxxx
+      connection:
+      - keep-alive
+      content-length:
+      - '20'
+      content-type:
+      - application/json
+      host:
+      - engine:3000
+      user-agent:
+      - python-httpx/0.26.0
+    method: POST
+    uri: http://engine:3000/api/organizations
+  response:
+    body:
+      string: '{"id":"65dfa2ec846e0004123c688f","name":"Clark Inc"}'
+    headers:
+      Connection:
+      - keep-alive
+      Date:
+      - Wed, 28 Feb 2024 21:17:32 GMT
+      Keep-Alive:
+      - timeout=72
+      Origin-Agent-Cluster:
+      - ?1
+      Referrer-Policy:
+      - no-referrer
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-DNS-Prefetch-Control:
+      - 'off'
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - '0'
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '52'
+      content-type:
+      - application/json; charset=utf-8
+      vary:
+      - Origin
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"name":"Smith and Sons"}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - xxxxx-xxxxx-xxxxx
+      connection:
+      - keep-alive
+      content-length:
+      - '25'
+      content-type:
+      - application/json
+      host:
+      - engine:3000
+      user-agent:
+      - python-httpx/0.26.0
+    method: POST
+    uri: http://engine:3000/api/organizations
+  response:
+    body:
+      string: '{"id":"65dfa2ec846e0004123c6890","name":"Smith and Sons"}'
+    headers:
+      Connection:
+      - keep-alive
+      Date:
+      - Wed, 28 Feb 2024 21:17:32 GMT
+      Keep-Alive:
+      - timeout=72
+      Origin-Agent-Cluster:
+      - ?1
+      Referrer-Policy:
+      - no-referrer
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-DNS-Prefetch-Control:
+      - 'off'
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - '0'
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '57'
+      content-type:
+      - application/json; charset=utf-8
+      vary:
+      - Origin
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"name":"Cardenas Ltd"}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - xxxxx-xxxxx-xxxxx
+      connection:
+      - keep-alive
+      content-length:
+      - '23'
+      content-type:
+      - application/json
+      host:
+      - engine:3000
+      user-agent:
+      - python-httpx/0.26.0
+    method: POST
+    uri: http://engine:3000/api/organizations
+  response:
+    body:
+      string: '{"id":"65dfa2ec846e0004123c6891","name":"Cardenas Ltd"}'
+    headers:
+      Connection:
+      - keep-alive
+      Date:
+      - Wed, 28 Feb 2024 21:17:32 GMT
+      Keep-Alive:
+      - timeout=72
+      Origin-Agent-Cluster:
+      - ?1
+      Referrer-Policy:
+      - no-referrer
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-DNS-Prefetch-Control:
+      - 'off'
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - '0'
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '55'
+      content-type:
+      - application/json; charset=utf-8
+      vary:
+      - Origin
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"name":"Anderson Group"}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - xxxxx-xxxxx-xxxxx
+      connection:
+      - keep-alive
+      content-length:
+      - '25'
+      content-type:
+      - application/json
+      host:
+      - engine:3000
+      user-agent:
+      - python-httpx/0.26.0
+    method: POST
+    uri: http://engine:3000/api/organizations
+  response:
+    body:
+      string: '{"id":"65dfa2ec846e0004123c6892","name":"Anderson Group"}'
+    headers:
+      Connection:
+      - keep-alive
+      Date:
+      - Wed, 28 Feb 2024 21:17:32 GMT
+      Keep-Alive:
+      - timeout=72
+      Origin-Agent-Cluster:
+      - ?1
+      Referrer-Policy:
+      - no-referrer
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-DNS-Prefetch-Control:
+      - 'off'
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - '0'
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '57'
+      content-type:
+      - application/json; charset=utf-8
+      vary:
+      - Origin
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"name":"Clark-Robinson"}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - xxxxx-xxxxx-xxxxx
+      connection:
+      - keep-alive
+      content-length:
+      - '25'
+      content-type:
+      - application/json
+      host:
+      - engine:3000
+      user-agent:
+      - python-httpx/0.26.0
+    method: POST
+    uri: http://engine:3000/api/organizations
+  response:
+    body:
+      string: '{"id":"65dfa2ec846e0004123c6893","name":"Clark-Robinson"}'
+    headers:
+      Connection:
+      - keep-alive
+      Date:
+      - Wed, 28 Feb 2024 21:17:32 GMT
+      Keep-Alive:
+      - timeout=72
+      Origin-Agent-Cluster:
+      - ?1
+      Referrer-Policy:
+      - no-referrer
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-DNS-Prefetch-Control:
+      - 'off'
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - '0'
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '57'
+      content-type:
+      - application/json; charset=utf-8
+      vary:
+      - Origin
+    status:
+      code: 200
+      message: OK
+- request:
+    body: ''
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - xxxxx-xxxxx-xxxxx
+      connection:
+      - keep-alive
+      content-type:
+      - application/json
+      host:
+      - engine:3000
+      user-agent:
+      - python-httpx/0.26.0
+    method: GET
+    uri: http://engine:3000/api/organizations
+  response:
+    body:
+      string: '{"data":[{"id":"[object Object]","name":"TestOrg"},{"id":"[object Object]","name":"Org
+        Tester Should Not Have Access To"},{"id":"65dfa2ec846e0004123c688f","name":"Clark
+        Inc"},{"id":"65dfa2ec846e0004123c6890","name":"Smith and Sons"},{"id":"65dfa2ec846e0004123c6891","name":"Cardenas
+        Ltd"},{"id":"65dfa2ec846e0004123c6892","name":"Anderson Group"},{"id":"65dfa2ec846e0004123c6893","name":"Clark-Robinson"}],"total":7,"pageNum":1,"pageSize":100}'
+    headers:
+      Connection:
+      - keep-alive
+      Date:
+      - Wed, 28 Feb 2024 21:17:32 GMT
+      Keep-Alive:
+      - timeout=72
+      Origin-Agent-Cluster:
+      - ?1
+      Referrer-Policy:
+      - no-referrer
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-DNS-Prefetch-Control:
+      - 'off'
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - '0'
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '443'
+      content-type:
+      - application/json; charset=utf-8
+      vary:
+      - Origin
+    status:
+      code: 200
+      message: OK
+version: 1

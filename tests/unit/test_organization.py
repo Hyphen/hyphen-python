@@ -3,7 +3,6 @@ from pytest import mark as m
 from pytest import fixture
 from faker import Faker
 
-from hyphen.settings import settings
 from hyphen import HyphenClient
 
 faker = Faker()
@@ -13,14 +12,18 @@ faker = Faker()
 class TestOrganization:
 
     @fixture(scope="function")
-    def client(self):
+    def client(self, settings):
         """Return a HyphenClient instance"""
         hyphen = HyphenClient(
-            host=settings.test_hyphen_url,)
+            organization_id="xxxx-xxxx-xxxx",
+            host=settings.test_hyphen_url,
+            client_id=settings.test_hyphen_client_id,
+            client_secret=settings.test_hyphen_client_secret,)
         return hyphen
 
     @m.context("and creating a new organization")
     @m.it("should create successfully")
+    @m.vcr()
     def test_create_organization(self, client):
         """Test creating a new organization"""
         name = faker.company()
@@ -29,6 +32,7 @@ class TestOrganization:
 
     @m.context("and reading an organization")
     @m.it("should read successfully")
+    @m.vcr()
     def test_read_organization(self, client):
         """Test reading an organization"""
         # TODO: set up in state instead
@@ -41,6 +45,7 @@ class TestOrganization:
 
     @m.context("and listing organizations")
     @m.it("should list all")
+    @m.vcr()
     def test_list_organizations(self, client):
         """Test listing organizations"""
         # TODO: set up in state instead, right now all this janky math is due to the remote db

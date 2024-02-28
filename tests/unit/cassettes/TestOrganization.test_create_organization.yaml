@@ -1,0 +1,120 @@
+interactions:
+- request:
+    body: '{"clientId":"secret","clientSecret":"secret"}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '72'
+      content-type:
+      - application/json
+      host:
+      - engine:3000
+      user-agent:
+      - python-httpx/0.26.0
+    method: POST
+    uri: http://engine:3000/api/auth/m2m
+  response:
+    body:
+      string: '{"access_token":"secret", "access_token_expires_in":3600000,"id_token":"secret","access_token_expires_at":1709158652232.523,"token_type":"Bearer"}'
+    headers:
+      Connection:
+      - keep-alive
+      Date:
+      - Wed, 28 Feb 2024 21:17:32 GMT
+      Keep-Alive:
+      - timeout=72
+      Origin-Agent-Cluster:
+      - ?1
+      Referrer-Policy:
+      - no-referrer
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-DNS-Prefetch-Control:
+      - 'off'
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - '0'
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '2572'
+      content-type:
+      - application/json; charset=utf-8
+      vary:
+      - Origin
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"name":"Garrett Group"}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - xxxxx-xxxxx-xxxxx
+      connection:
+      - keep-alive
+      content-length:
+      - '24'
+      content-type:
+      - application/json
+      host:
+      - engine:3000
+      user-agent:
+      - python-httpx/0.26.0
+    method: POST
+    uri: http://engine:3000/api/organizations
+  response:
+    body:
+      string: '{"id":"65dfa2ec846e0004123c688d","name":"Garrett Group"}'
+    headers:
+      Connection:
+      - keep-alive
+      Date:
+      - Wed, 28 Feb 2024 21:17:32 GMT
+      Keep-Alive:
+      - timeout=72
+      Origin-Agent-Cluster:
+      - ?1
+      Referrer-Policy:
+      - no-referrer
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-DNS-Prefetch-Control:
+      - 'off'
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - '0'
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '56'
+      content-type:
+      - application/json; charset=utf-8
+      vary:
+      - Origin
+    status:
+      code: 200
+      message: OK
+version: 1
