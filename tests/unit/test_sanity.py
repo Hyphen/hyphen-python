@@ -13,7 +13,7 @@ class TestSanity:
     def test_check_dev_setup(self, settings):
         """Test that the dev setup is working"""
         hyphen = HyphenClient(
-            url=settings.test_hyphen_url,
+            host=settings.test_hyphen_url,
             client_id=settings.test_hyphen_client_id,
             client_secret=settings.test_hyphen_client_secret,
             organization_id="xxxx-xxxx-xxxx"
