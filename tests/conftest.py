@@ -3,6 +3,7 @@ from pathlib import Path
 import json
 import pytest
 from pymongo import MongoClient
+import bson
 
 from pydantic_settings import BaseSettings
 
@@ -55,6 +56,8 @@ def reset_engine_db(settings):
             db[collection].delete_many({})
             bulk_file = Path(__file__).parent / f"assets/foundational_test_state/{collection}.json"
             bulk = json.loads(bulk_file.read_text())
+            for doc in bulk:
+                doc["_id"] = bson.ObjectId(doc["_id"]["oid"])
             db[collection].insert_many(bulk)
         yield
     finally:
