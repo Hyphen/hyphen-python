@@ -1,0 +1,28 @@
+[
+    {
+    "_id": {
+        "oid": "65df56ba846e0004123c6879"
+    },
+    "name": "TestOrg",
+    "meta": {
+        "status": "active",
+        "createdBy": "Request id raGavREgSW0DkgGDrwD06t",
+        "createdAt": {
+        "date": "2024-02-28T15:52:26.452Z"
+        }
+    }
+    },
+    {
+    "_id": {
+        "oid": "65d5uhgrlji0lhjewflm1i7v"
+    },
+    "name": "Org Tester Should Not Have Access To",
+    "meta": {
+        "status": "active",
+        "createdBy": "Request id raImXaQkgOPY1njI2a6DTA",
+        "createdAt": {
+        "date": "2024-02-28T15:52:26.452Z"
+        }
+    }
+    }
+]

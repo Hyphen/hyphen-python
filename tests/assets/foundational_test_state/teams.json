@@ -1,0 +1,59 @@
+[
+    {
+    "_id": {
+        "oid": "65dfph0u6ayzveudo4gldrqm"
+    },
+    "name": "marketing",
+    "organization": {
+        "id": {
+        "oid": "65df56ba846e0004123c6879"
+        },
+        "name": "TestOrg"
+    },
+    "meta": {
+        "status": "active",
+        "createdBy": "Request id rajm14W5IkWKFYYNsIZzRt",
+        "createdAt": {
+        "date": "2024-02-28T15:52:26.580Z"
+        }
+    }
+    },
+    {
+    "_id": {
+        "oid": "65djs1j8mlxetjnexcrcqzqe"
+    },
+    "name": "Sales",
+    "organization": {
+        "id": {
+        "oid": "65df56ba846e0004123c6879"
+        },
+        "name": "TestOrg"
+    },
+    "meta": {
+        "status": "active",
+        "createdBy": "Request id cn1Fr5ab4u7GYJ8QmwvRP9",
+        "createdAt": {
+        "date": "2024-02-28T15:52:26.580Z"
+        }
+    }
+    },
+    {
+    "_id": {
+        "oid": "65d4wpg5vup1wnkl0nrjnnrc"
+    },
+    "name": "Team that should not be seen",
+    "organization": {
+        "id": {
+        "oid": "65d5uhgrlji0lhjewflm1i7v"
+        },
+        "name": "Org Tester Should Not Have Access To"
+    },
+    "meta": {
+        "status": "active",
+        "createdBy": "Request id rai8fMvgkZanJUPCBtpakv",
+        "createdAt": {
+        "date": "2024-02-28T15:52:26.580Z"
+        }
+    }
+    }
+]

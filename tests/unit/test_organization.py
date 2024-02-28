@@ -16,7 +16,7 @@ class TestOrganization:
     def client(self):
         """Return a HyphenClient instance"""
         hyphen = HyphenClient(
-            host=settings.local_hyphen_uri)
+            host=settings.test_hyphen_url,)
         return hyphen
 
     @m.context("and creating a new organization")

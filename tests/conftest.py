@@ -1,7 +1,17 @@
-import subprocess
+from pathlib import Path
+import json
 import pytest
+from pymongo import MongoClient
+
+from pydantic_settings import BaseSettings
 
 from hyphen.settings import settings
+
+class TestSettings(BaseSettings):
+    test_hyphen_url: str
+    test_hyphen_mongodb_uri: str
+
+test_settings = TestSettings()
 
 @pytest.fixture(scope="module")
 def vcr_config():
@@ -14,7 +24,10 @@ def vcr_config():
 
 @pytest.fixture(scope="function", autouse=True)
 def reset_engine_db():
-    if "TODO: how do we reset this remotely on each test?":
-        return
-    reset_string = f'mongosh "mongodb://{settings.local_hyphen_db_username}:{settings.local_hyphen_db_password}@{settings.local_hyphen_uri}:27017" --authenticationDatabase admin --eval "db.dropDatabase()"'
-    subprocess.run(reset_string)
+    client = MongoClient(test_settings.test_hyphen_mongodb_uri)
+    db = client.test
+    for collection in ("members", "teams", "organizations"):
+        db[collection].delete_many({})
+        bulk_file = Path(__file__).parent / f"assets/foundational_test_state/{collection}.json"
+        bulk = json.loads(bulk_file.read_text())
+        db[collection].insert_many(bulk)

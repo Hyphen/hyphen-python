@@ -12,5 +12,5 @@ class TestNoDuplicateInstances:
     def test_one_instance(self):
         with patch("hyphen.client.HTTPRequestClient") as mock_client:
             _ = HyphenClient(
-                host=settings.local_hyphen_uri)
+                host=settings.test_hyphen_url)
             mock_client.assert_called_once()
