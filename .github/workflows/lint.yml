@@ -58,6 +58,8 @@ jobs:
         run: docker network create hyphen
       - name: build docker image
         run: docker build -f dockerfiles/CI.Dockerfile -t hyphen .
+        env:
+          TEST_ENVIRONMENT: CI
       - name: run black
         run: docker run --rm --env-file .env hyphen /bin/bash -c "black --check ."
       - name: run prospector
