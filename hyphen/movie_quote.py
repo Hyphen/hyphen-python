@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional, List, Union, Any
+from typing import TYPE_CHECKING, Union
 from pydantic import BaseModel
 
 if TYPE_CHECKING:
@@ -8,13 +8,15 @@ if TYPE_CHECKING:
 class MovieQuote(BaseModel):
     quote: str
 
+
 class MovieQuoteFactory:
 
-    def __init__(self, client:Union["HTTPRequestClient","AsyncHTTPRequestClient"]):
+    def __init__(self, client: Union["HTTPRequestClient", "AsyncHTTPRequestClient"]):
         self.client = client
 
     def get(self) -> "MovieQuote":
         return self.client.get("api/quote", MovieQuote)
+
 
 class AsyncMovieQuoteFactory(MovieQuoteFactory):
 

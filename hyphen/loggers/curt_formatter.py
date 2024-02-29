@@ -2,6 +2,7 @@ from pathlib import Path
 from copy import copy
 import logging
 
+
 class CurtFormatter(logging.Formatter):
     def format(self, record):
         # Replace the levelname with its first letter colored

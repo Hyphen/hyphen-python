@@ -7,6 +7,7 @@ from pydantic import BaseModel, model_validator, Field
 class Bearer(str, Enum):
     Bearer = "Bearer"
 
+
 class Auth(BaseModel):
     expires_in: int = Field(..., alias="access_token_expires_in")
     expires_at: datetime = Field(..., alias="access_token_expires_at")
@@ -18,5 +19,7 @@ class Auth(BaseModel):
     def set_expires(cls, v):
         """exp are mongodb native times"""
         v["access_token_expires_in"] = v["access_token_expires_in"] / 1000
-        v["access_token_expires_at"] = datetime.fromtimestamp((v["access_token_expires_at"] / 1000))
+        v["access_token_expires_at"] = datetime.fromtimestamp(
+            (v["access_token_expires_at"] / 1000)
+        )
         return v

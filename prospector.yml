@@ -1,3 +1,4 @@
 pylint:
   disable:
     - invalid-overridden-method
+    - redefined-builtin
