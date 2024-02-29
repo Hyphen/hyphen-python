@@ -13,7 +13,7 @@
   },
   "roleMappings": [
     {
-      "resourceId": "*",
+      "resourceId": "65dfd847846e0004123c6899",
       "resourceType": "organization",
       "roles": [
         "organizationMember"
@@ -30,6 +30,44 @@
       "resourceType": "team",
       "resourceId": "65dfb23ed3b7fc20de65a34c",
       "roles": ["teamOwner"]
+    }
+  ],
+  "meta": {
+    "status": "active",
+    "createdBy": "Request id 65dfaa909ea1295731011c5a",
+    "createdAt": {
+      "date": "2024-02-28T15:52:26.575Z"
+    },
+    "modifiedAt": {
+      "date": "2024-02-28T15:52:26.590Z"
+    },
+    "modifiedBy": "Request id 65dfaadf738924ed81403688"
+  }
+},
+{
+  "_id": {
+    "oid": "65dfd847846e0004123c6899"
+  },
+  "firstName": "Normal",
+  "lastName": "User",
+  "organization": {
+        "id": {
+        "oid": "65dfaa909ea1295731011c5a"
+        },
+        "name": "TestOrg"
+  },
+  "roleMappings": [
+    {
+      "resourceId": "65dfd847846e0004123c6899",
+      "resourceType": "organization",
+      "roles": [
+        "organizationMember"
+      ]
+    },
+    {
+      "resourceType": "team",
+      "resourceId": "65dfb23ed3b7fc20de65a34c",
+      "roles": []
     }
   ],
   "meta": {

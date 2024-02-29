@@ -36,6 +36,11 @@ class TeamFactory(BaseFactory):
         created = self.client.post(self.url_path, Team, instance)
         return self._add_member_factory(created)
 
+    def read(self, id:str) -> "Team":
+        """Read an existing team"""
+        team = super().read(id)
+        return self._add_member_factory(team)
+
     def list(self) -> "Team":
         """List all teams available with the provided credentials.
         """
@@ -68,6 +73,11 @@ class AsyncTeamFactory(TeamFactory):
         instance = Team(name=name)
         created = await self.client.post(self.url_path, Team, instance)
         return self._add_member_factory(created)
+
+    async def read(self, id:str) -> "Team":
+        """Read an existing team"""
+        team = await self.client.get(f"{self.url_path}/{id}", Team)
+        return self._add_member_factory(team)
 
     async def list(self) -> "Team":
         """List all teams available with the provided credentials.

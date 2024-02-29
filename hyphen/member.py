@@ -82,6 +82,7 @@ class MemberFactory(BaseFactory):
         if self.role_context == "organization":
             raise IncorrectMethodException("To add a Member to an Organization, use `client.member.create()`. To add a Member to a Team, use `team.member.add()`.")
 
+        member.roles = [Role(name="teamMember", context=self.role_context, context_id=self.role_context_id)]
         # put responds with None now
         _ = self.client.put(self.url_path,
                                  instance=MemberIdsReference(members=[member]))
@@ -167,7 +168,8 @@ class AsyncMemberFactory(MemberFactory):
         if self.role_context == "organization":
             raise IncorrectMethodException("To add a Member to an Organization, use `client.member.create()`. To add a Member to a Team, use `team.member.add()`.")
 
-        member = await self.client.put(self.url_path,
+        member.roles = [Role(name="teamMember", context=self.role_context, context_id=self.role_context_id)]
+        _ = await self.client.put(self.url_path,
                                instance=MemberIdsReference(members=[member]))
         # the only way to get the full member scoped is via team list at the moment
         for refreshed_member in await self.list():
