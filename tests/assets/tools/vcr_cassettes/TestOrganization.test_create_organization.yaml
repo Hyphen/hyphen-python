@@ -20,12 +20,12 @@ interactions:
     uri: http://engine:3000/api/auth/m2m
   response:
     body:
-      string: '{"access_token":"secret", "access_token_expires_in":3600000,"id_token":"secret","access_token_expires_at":1709158652463.408,"token_type":"Bearer"}'
+      string: '{"access_token":"secret", "access_token_expires_in":3600000,"id_token":"secret","access_token_expires_at":1709250926641.8608,"token_type":"Bearer"}'
     headers:
       Connection:
       - keep-alive
       Date:
-      - Wed, 28 Feb 2024 21:17:32 GMT
+      - Thu, 29 Feb 2024 22:55:26 GMT
       Keep-Alive:
       - timeout=72
       Origin-Agent-Cluster:
@@ -58,7 +58,7 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"name":"Hughes-Hall"}'
+    body: '{"name":"Wong-Medina"}'
     headers:
       accept:
       - application/json
@@ -80,70 +80,12 @@ interactions:
     uri: http://engine:3000/api/organizations
   response:
     body:
-      string: '{"id":"65dfa2ec846e0004123c688e","name":"Hughes-Hall"}'
+      string: '{"id":"65e10b5e91b760ec36a328f2","name":"Wong-Medina"}'
     headers:
       Connection:
       - keep-alive
       Date:
-      - Wed, 28 Feb 2024 21:17:32 GMT
-      Keep-Alive:
-      - timeout=72
-      Origin-Agent-Cluster:
-      - ?1
-      Referrer-Policy:
-      - no-referrer
-      Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
-      X-Content-Type-Options:
-      - nosniff
-      X-DNS-Prefetch-Control:
-      - 'off'
-      X-Download-Options:
-      - noopen
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Permitted-Cross-Domain-Policies:
-      - none
-      X-XSS-Protection:
-      - '0'
-      access-control-allow-origin:
-      - '*'
-      content-length:
-      - '54'
-      content-type:
-      - application/json; charset=utf-8
-      vary:
-      - Origin
-    status:
-      code: 200
-      message: OK
-- request:
-    body: ''
-    headers:
-      accept:
-      - application/json
-      accept-encoding:
-      - gzip, deflate
-      authorization:
-      - xxxxx-xxxxx-xxxxx
-      connection:
-      - keep-alive
-      content-type:
-      - application/json
-      host:
-      - engine:3000
-      user-agent:
-      - python-httpx/0.26.0
-    method: GET
-    uri: http://engine:3000/api/organizations/65dfa2ec846e0004123c688e
-  response:
-    body:
-      string: '{"id":"65dfa2ec846e0004123c688e","name":"Hughes-Hall"}'
-    headers:
-      Connection:
-      - keep-alive
-      Date:
-      - Wed, 28 Feb 2024 21:17:32 GMT
+      - Thu, 29 Feb 2024 22:55:26 GMT
       Keep-Alive:
       - timeout=72
       Origin-Agent-Cluster:
