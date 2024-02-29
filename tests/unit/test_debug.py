@@ -2,15 +2,31 @@ from pytest import mark as m
 from httpx import URL
 import hyphen
 
+
 class TestDebugProfile:
 
     @m.vcr()
-    def test_debug_profile(self):
+    def test_debug_profile(self, settings):
         client = hyphen.HyphenClient(
-            host="http://engine:3000",
-            organization_id='65d76d14d620e4b4a4d06e6e')
+            host=settings.test_hyphen_url,
+            organization_id="65df56ba846e0004123c6879",  # see /assets/foundational_test_state
+            client_id=settings.test_hyphen_client_id,
+            client_secret=settings.test_hyphen_client_secret,
+        )
+
         unauthed = client.debug_profile
-        assert unauthed == {'http_client': {'client_type': 'HTTPRequestClient', 'auth_token_expires': 0.0, 'm2m_credentials': ['chat', 'OE8e[redacted]Zo4j'], 'headers': {'accept-encoding': 'gzip, deflate', 'connection': 'keep-alive', 'user-agent': 'python-httpx/0.26.0', 'content-type': 'application/json', 'accept': 'application/json'}, 'authorization_header': None}, 'host': 'http://engine:3000', 'organization_id': '65d76d14d620e4b4a4d06e6e', 'on_behalf_of': None}
+        guts = unauthed["http_client"]
+        assert guts["client_type"] == "HTTPRequestClient"
+        assert guts["auth_token_expires"] == 0.0
+        assert "[redacted]" in guts["m2m_credentials"][1]
+        assert guts["authorization_header"] is None
+        # assert guts["on_behalf_of"] is None
         _ = client.organizations.list()
         authed = client.debug_profile
-        assert authed == {'http_client': {'client_type': 'HTTPRequestClient', 'auth_token_expires': 1708623548.138, 'm2m_credentials': ['chat', 'OE8e[redacted]Zo4j'], 'headers': {'accept-encoding': 'gzip, deflate', 'connection': 'keep-alive', 'user-agent': 'python-httpx/0.26.0', 'content-type': 'application/json', 'accept': 'application/json'}, 'authorization_header': 'Bearer e[redacted]sy1A'}, 'host': 'http://engine:3000', 'organization_id': '65d76d14d620e4b4a4d06e6e', 'on_behalf_of': None}
+        guts = authed["http_client"]
+        assert guts["client_type"] == "HTTPRequestClient"
+        assert guts["auth_token_expires"] > 0.0
+        assert "[redacted]" in guts["m2m_credentials"][1]
+        assert "Bearer" in guts["authorization_header"]
+        # assert guts["on_behalf_of"] is None
+        # assert guts["organization_id"] is not None

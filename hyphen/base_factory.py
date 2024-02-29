@@ -1,13 +1,9 @@
-from typing import TYPE_CHECKING, List, Any, Union, Optional
+from typing import TYPE_CHECKING, List, Any
 from pydantic import BaseModel
 from abc import ABC
 
-from hyphen.exceptions import AmbiguousOrganizationException
-
 if TYPE_CHECKING:
-    from hyphen.client import HTTPRequestClient, AsyncHTTPRequestClient
-
-
+    from hyphen.client import HTTPRequestClient
 
 
 class CollectionList(BaseModel):
@@ -22,46 +18,57 @@ class CollectionList(BaseModel):
 
 class BaseFactory(ABC):
     """The common ancestor of all object factories"""
+
     _object_class: type
     url_path: str
 
-    def __init__(self, client:"HTTPRequestClient"):
-        """Initialize the object factory.
-        """
+    def __init__(self, client: "HTTPRequestClient"):
+        """Initialize the object factory."""
         self.client = client
 
     def create(self, **kwargs) -> "Any":
-        f"""Create a new {str(self._object_class)}, within the context of the current organization"""
+        """Create a new object, within the context of the current organization"""
+
         def _create(**kwargs) -> self._object_class:
             Candidate = self._object_class(**kwargs)
             return self.client.post(self.url_path, self._object_class, Candidate)
+
         return _create(**kwargs)
 
-    def read(self, id:str) -> "Any":
-        f"""Read a {self._object_class}"""
-        def _read(id:str) -> self._object_class:
+    def read(self, id: str) -> "Any":
+        """Read an object"""
+
+        def _read(id: str) -> self._object_class:
             return self.client.get(f"{self.url_path}/{id}", self._object_class)
+
         return _read(id)
 
     def list(self) -> "CollectionList":
-        """List all {self._object_class}s"""
+        """List all objects"""
+
         class HyphenCollection(CollectionList):
             data: List[self._object_class]
 
         return self.client.get(self.url_path, HyphenCollection)
 
-    def update(self, target:Any) -> "Any":
-        f"""Update a {self._object_class.__name__}. Accepts an updated instance
+    def update(self, target: Any) -> "Any":
+        """Update an object. Accepts an updated instance
         to persist.
         """
-        def _update(target:self._object_class) -> self._object_class:
-            return self.client.patch(f"{self.url_path}/{target.id}", self._object_class, target)
+
+        def _update(target: self._object_class) -> self._object_class:
+            return self.client.patch(
+                f"{self.url_path}/{target.id}", self._object_class, target
+            )
+
         return _update(target)
 
-    def delete(self, target:Any) -> None:
-        f"""Delete a {self._object_class.__name__}"""
-        def _delete(target:self._object_class) -> None:
+    def delete(self, target: Any) -> None:
+        """Delete an object"""
+
+        def _delete(target: self._object_class) -> None:
             return self.client.delete(f"{self.url_path}/{target.id}")
+
         return _delete(target)
 
 
@@ -70,33 +77,39 @@ class AsyncBaseFactory(BaseFactory):
     _object_class: type
     url_path: str
 
-    async def __init__(self, client:"HTTPRequestClient"):
-        """Initialize the object factory.
-        """
+    async def __init__(self, client: "HTTPRequestClient"):
+        """Initialize the object factory."""
         self.client = client
 
     async def create(self, **kwargs) -> "Any":
-        f"""Create a new {str(self._object_class)}, within the context of the current organization"""
+        """Create a new object, within the context of the current organization"""
+
         async def _create(**kwargs) -> self._object_class:
             Candidate = self._object_class(**kwargs)
             return await self.client.post(self.url_path, self._object_class, Candidate)
+
         return await _create(**kwargs)
 
-    async def read(self, id:str) -> "Any":
-        f"""Read a {self._object_class}"""
-        async def _read(id:str) -> self._object_class:
+    async def read(self, id: str) -> "Any":
+        """Read an object"""
+
+        async def _read(id: str) -> self._object_class:
             return await self.client.get(f"{self.url_path}/{id}", self._object_class)
+
         return await _read(id)
 
     async def list(self) -> "CollectionList":
-        """List all {self._object_class}s"""
+        """List all objects"""
+
         class HyphenCollection(CollectionList):
             data: List[self._object_class]
 
         return await self.client.get(self.url_path, HyphenCollection)
 
-    async def delete(self, target:Any) -> None:
-        f"""Delete a {self._object_class.__name__}"""
-        async def _delete(target:self._object_class) -> None:
+    async def delete(self, target: Any) -> None:
+        """Delete an object"""
+
+        async def _delete(target: self._object_class) -> None:
             return await self.client.delete(f"{self.url_path}/{target.id}")
+
         return await _delete(target)

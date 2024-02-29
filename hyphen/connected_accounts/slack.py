@@ -2,6 +2,7 @@ from typing import Optional
 from pydantic import Field, computed_field
 from hyphen.base_object import RESTModel
 
+
 class Slack(RESTModel):
     id: str = Field(alias="identifier")
     team_id: str

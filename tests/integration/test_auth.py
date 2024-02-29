@@ -3,37 +3,40 @@ from pytest import raises
 
 
 from hyphen import HyphenClient
-from hyphen.settings import settings
+
 
 @m.describe("When authenticating a client with Hyphen.ai")
 @m.integration
 class TestAuth:
 
     @m.vcr
-    @m.context("and using a valid legacy API key")
+    @m.context("and valid client settings are provided")
     @m.it("should authenticate successfully")
-    def test_m2m_happy_path(self):
+    def test_m2m_happy_path(self, settings):
         """Test m2m authentication with a valid key set"""
         hyphen = HyphenClient(
-            host=settings.development_hyphen_uri)
+            organization_id="xxxxxxxx-xxxxxxx",
+            client_id=settings.test_hyphen_client_id,
+            client_secret=settings.test_hyphen_client_secret,
+            host=settings.test_hyphen_url,
+        )
 
         assert hyphen.authenticated
 
+    @m.vcr
     @m.context("and no or bad auth is provided")
     @m.it("should shortcircuit")
-    def test_no_auth_sad_path(self):
+    def test_no_auth_sad_path(self, settings):
         """Test with no or bad auth"""
-        with raises(AssertionError):
+        with raises(NotImplementedError):  #  in the case of OAuth not implemented
             hyphen = HyphenClient(
-                host=settings.development_hyphen_uri)
-
-        hyphen = HyphenClient(
-            legacy_api_key="xxxx-xxxx-xxxx-xxxx",
-            host=settings.development_hyphen_uri)
-        assert not hyphen.authenticated
+                organization_id="xxxx-xxxx-xxxx-xxxx", host=settings.test_hyphen_url
+            )
 
         hyphen = HyphenClient(
             client_id="xxxx-xxxx-xxxx-xxxx",
             client_secret="xxxx-xxxx",
-            host=settings.development_hyphen_uri)
+            organization_id="xxxx-xxxx-xxxx-xxxx",
+            host=settings.test_hyphen_url,
+        )
         assert not hyphen.authenticated

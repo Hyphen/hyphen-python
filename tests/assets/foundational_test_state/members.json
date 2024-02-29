@@ -1,13 +1,134 @@
 [
 {
   "_id": {
-    "oid": "65df56ba846e0004123c687a"
+    "oid": "65dfaa778a70bcfa248c6c03"
   },
   "firstName": "test",
   "lastName": "owner",
   "organization": {
         "id": {
-        "oid": "65d5uhgrlji0lhjewflm1i7v"
+        "oid": "65dfaa909ea1295731011c5a"
+        },
+        "name": "TestOrg"
+  },
+  "roleMappings": [
+    {
+      "resourceId": "65dfd847846e0004123c6899",
+      "resourceType": "organization",
+      "roles": [
+        "organizationMember"
+      ]
+    },
+    {
+      "resourceId": "*",
+      "resourceType": "team",
+      "roles": [
+        "teamMember"
+      ]
+    },
+    {
+      "resourceType": "team",
+      "resourceId": "65dfb23ed3b7fc20de65a34c",
+      "roles": ["teamOwner", "teamMember"]
+    }
+  ],
+  "meta": {
+    "status": "active",
+    "createdBy": "Request id 65dfaa909ea1295731011c5a",
+    "createdAt": {
+      "date": "2024-02-28T15:52:26.575Z"
+    },
+    "modifiedAt": {
+      "date": "2024-02-28T15:52:26.590Z"
+    },
+    "modifiedBy": "Request id 65dfaadf738924ed81403688"
+  }
+},
+{
+  "_id": {
+    "oid": "65dfe4c2846e0004123c68a7"
+  },
+  "firstName": "Leader",
+  "lastName": "User",
+  "organization": {
+        "id": {
+        "oid": "65dfaa909ea1295731011c5a"
+        },
+        "name": "TestOrg"
+  },
+  "roleMappings": [
+    {
+      "resourceId": "65dfd847846e0004123c6899",
+      "resourceType": "organization",
+      "roles": [
+        "organizationMember"
+      ]
+    },
+    {
+      "resourceType": "team",
+      "resourceId": "65dfb23ed3b7fc20de65a34c",
+      "roles": ["teamLead", "teamMember"]
+    }
+  ],
+  "meta": {
+    "status": "active",
+    "createdBy": "Request id 65dfaa909ea1295731011c5a",
+    "createdAt": {
+      "date": "2024-02-28T15:52:26.575Z"
+    },
+    "modifiedAt": {
+      "date": "2024-02-28T15:52:26.590Z"
+    },
+    "modifiedBy": "Request id 65dfaadf738924ed81403688"
+  }
+},
+{
+  "_id": {
+    "oid": "65dfd847846e0004123c6899"
+  },
+  "firstName": "Normal",
+  "lastName": "User",
+  "organization": {
+        "id": {
+        "oid": "65dfaa909ea1295731011c5a"
+        },
+        "name": "TestOrg"
+  },
+  "roleMappings": [
+    {
+      "resourceId": "65dfd847846e0004123c6899",
+      "resourceType": "organization",
+      "roles": [
+        "organizationMember"
+      ]
+    },
+    {
+      "resourceType": "team",
+      "resourceId": "65dfb23ed3b7fc20de65a34c",
+      "roles": []
+    }
+  ],
+  "meta": {
+    "status": "active",
+    "createdBy": "Request id 65dfaa909ea1295731011c5a",
+    "createdAt": {
+      "date": "2024-02-28T15:52:26.575Z"
+    },
+    "modifiedAt": {
+      "date": "2024-02-28T15:52:26.590Z"
+    },
+    "modifiedBy": "Request id 65dfaadf738924ed81403688"
+  }
+},
+{
+  "_id": {
+    "oid": "65dfab17221a63ab0bcb0342"
+  },
+  "firstName": "Nottest",
+  "lastName": "Notowner",
+  "organization": {
+        "id": {
+        "oid": "65dfabad09dd130320f85f66"
         },
         "name": "Org Tester Should Not Have Access To"
   },
@@ -28,21 +149,20 @@
     },
     {
       "resourceType": "team",
-      "resourceId": "65dfph0u6ayzveudo4gldrqm",
+      "resourceId": "65dfab39e83c5a8213d52dc1",
       "roles": []
     }
   ],
   "meta": {
     "status": "active",
-    "createdBy": "Request id raRlf2bUHkugbtuei5XoMJ",
+    "createdBy": "Request id 65dfab4837f4ab6d8d6d3871",
     "createdAt": {
       "date": "2024-02-28T15:52:26.575Z"
     },
     "modifiedAt": {
       "date": "2024-02-28T15:52:26.590Z"
     },
-    "modifiedBy": "Request id raRlf2bUHkugbtuei5XoMJ"
+    "modifiedBy": "Request id 65dfaadf738924ed81403688"
   }
 }
-
 ]

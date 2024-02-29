@@ -1,0 +1,60 @@
+interactions:
+- request:
+    body: '{"clientId":"secret","clientSecret":"secret"}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '64'
+      content-type:
+      - application/json
+      host:
+      - engine:3000
+      user-agent:
+      - python-httpx/0.26.0
+    method: POST
+    uri: http://engine:3000/api/auth/m2m
+  response:
+    body:
+      string: '{"message":"Unable to login, verify username and password.","requestId":"r3ii2VTaQkDvbQAHWrJyWi","errorCode":"vUjkVZSwJjwUM1aoTDskqM"}'
+    headers:
+      Connection:
+      - keep-alive
+      Date:
+      - Thu, 29 Feb 2024 03:59:59 GMT
+      Keep-Alive:
+      - timeout=72
+      Origin-Agent-Cluster:
+      - ?1
+      Referrer-Policy:
+      - no-referrer
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-DNS-Prefetch-Control:
+      - 'off'
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - '0'
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '134'
+      content-type:
+      - application/json; charset=utf-8
+      vary:
+      - Origin
+    status:
+      code: 401
+      message: Unauthorized
+version: 1

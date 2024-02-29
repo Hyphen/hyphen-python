@@ -13,18 +13,20 @@ if TYPE_CHECKING:
     from hyphen.team import Team
     from hyphen.organization import Organization
 
+
 class MemberIdsReference(RESTModel):
     members: List[dict]
 
     @field_validator("members", mode="before")
     @classmethod
-    def convert_member_object(cls, value:"Member"):
+    def convert_member_object(cls, value: "Member"):
         members = []
         for member in value:
             member_id = getattr(member, "id", None)
             member_roles = [role.name for role in getattr(member, "roles", [])]
             members.append({"id": member_id, "roles": member_roles})
         return members
+
 
 class Member(RESTModel):
     id: Optional[str] = None
@@ -34,13 +36,12 @@ class Member(RESTModel):
     roles: List[Optional[Role]] = []
     roles_context: Literal["organization", "team"] = Field(default=None, exclude=True)
 
-
     def __repr__(self):
         return f"<Member: {self.first_name} {self.last_name}>"
 
     @field_validator("connected_accounts", mode="before")
     @classmethod
-    def parse_connected_accounts(cls, value:List) -> List[Union[Slack, dict]]:
+    def parse_connected_accounts(cls, value: List) -> List[Union[Slack, dict]]:
         if not value:
             return []
         parsed_accounts = []
@@ -61,48 +62,64 @@ class Member(RESTModel):
                 return account
         return None
 
-    def update_context(self, context:Union["Team", "Organization"]):
+    def update_context(self, context: Union["Team", "Organization"]):
         return context.member.get(self.id)
+
 
 class MemberFactory(BaseFactory):
     _object_class = Member
 
-    def __init__(self, client:"HTTPRequestClient"):
+    def __init__(self, client: "HTTPRequestClient"):
         super().__init__(client)
-        self.url_path = f"api/organizations/{self.client.hyphen_client.organization_id}/members"
+        self.url_path = (
+            f"api/organizations/{self.client.hyphen_client.organization_id}/members"
+        )
 
     def list(self) -> List[Member]:
-        """List all members available with the provided credentials.
-        """
+        """List all members available with the provided credentials."""
         members = super().list()
         return [self._scope_member(member) for member in members]
 
     def add(self, member: Member) -> None:
         """Add a member to the team"""
         if self.role_context == "organization":
-            raise IncorrectMethodException("To add a Member to an Organization, use `client.member.create()`. To add a Member to a Team, use `team.member.add()`.")
+            raise IncorrectMethodException(
+                "To add a Member to an Organization, use `client.member.create()`. To add a Member to a Team, use `team.member.add()`."
+            )
 
+        member.roles = [
+            Role(
+                name="teamMember",
+                context=self.role_context,
+                context_id=self.role_context_id,
+            )
+        ]
         # put responds with None now
-        _ = self.client.put(self.url_path,
-                                 instance=MemberIdsReference(members=[member]))
+        _ = self.client.put(
+            self.url_path, instance=MemberIdsReference(members=[member])
+        )
         # the only way to get the full member scoped is via team list at the moment
         for refreshed_member in self.list():
             if member.id == refreshed_member.id:
                 return self._scope_member(refreshed_member)
+            return None
 
     def remove(self, member: "Member") -> None:
         """Remove a member from the team"""
         if self.role_context == "organization":
-            raise IncorrectMethodException("To delete a Member from an Organization, use `client.member.delete()`. To remove a Member from a Team, use `team.member.remove()`.")
+            raise IncorrectMethodException(
+                "To delete a Member from an Organization, use `client.member.delete()`. To remove a Member from a Team, use `team.member.remove()`."
+            )
         return self.client.delete(f"{self.url_path}/{member.id}")
 
-    def assign_role(self, role_name: str, members:List[Member]) -> None:
+    def assign_role(self, role_name: str, members: List[Member]) -> None:
         """Assign a role to a member for either a team or an organization."""
         members = self._apply_role_to_members(role_name, members)
 
         # TODO: should verify the response object
-        _ = self.client.put(f"{self.url_path}",
-                             instance=MemberIdsReference(members=members))
+        _ = self.client.put(
+            f"{self.url_path}", instance=MemberIdsReference(members=members)
+        )
         return [self._scope_member(member) for member in members]
 
     def revoke_role(self, role: Union[Role, str], member: Member) -> None:
@@ -111,10 +128,14 @@ class MemberFactory(BaseFactory):
         transactions, so this method only supports one call at a time.
         """
         if self.role_context == "organization":
-            raise NotImplementedError("Revoking roles from an organization is not yet supported.")
+            raise NotImplementedError(
+                "Revoking roles from an organization is not yet supported."
+            )
 
         role_name = getattr(role, "name", role)
-        return self.client.delete(f"{self.url_path}/{member.id}/roles", LocalizedRole(roles=[role_name]))
+        return self.client.delete(
+            f"{self.url_path}/{member.id}/roles", LocalizedRole(roles=[role_name])
+        )
 
     @property
     def role_context_id(self) -> str:
@@ -124,7 +145,7 @@ class MemberFactory(BaseFactory):
     def role_context(self) -> str:
         return "team" if "team" in self.url_path else "organization"
 
-    def _scope_member(self, member:"Member") -> List[Role]:
+    def _scope_member(self, member: "Member") -> List[Role]:
         """Scope roles to the current object"""
         member.roles_context = member.roles_context or self.role_context
         for role in member.roles:
@@ -132,43 +153,57 @@ class MemberFactory(BaseFactory):
             role.context_id = role.context_id or self.role_context_id
         return member
 
-    def _apply_role_to_members(self, role_name:str, members:List[Member]) -> List[Member]:
+    def _apply_role_to_members(
+        self, role_name: str, members: List[Member]
+    ) -> List[Member]:
         """Apply a role to a member"""
-        role = Role(name=role_name,
-                    context=self.role_context,
-                    context_id=self.role_context_id)
+        role = Role(
+            name=role_name, context=self.role_context, context_id=self.role_context_id
+        )
         for member in members:
             if role not in member.roles:
                 member.roles.append(role)
         return members
 
+
 class AsyncMemberFactory(MemberFactory):
 
     _object_class = Member
 
-    def __init__(self, client:"AsyncHTTPRequestClient"):
+    def __init__(self, client: "AsyncHTTPRequestClient"):
         super().__init__(client)
-        self.url_path = f"api/organizations/{self.client.hyphen_client.organization_id}/members"
+        self.url_path = (
+            f"api/organizations/{self.client.hyphen_client.organization_id}/members"
+        )
 
     async def list(self) -> List[Member]:
-        """List all members available with the provided credentials.
-        """
+        """List all members available with the provided credentials."""
         # since the parent list method does not return directly (which would give us a coroutine to await)
         # we need to redefine it to match async_base_factory here.
 
         class HyphenCollection(CollectionList):
             data: List[self._object_class]
 
-        members =  await self.client.get(self.url_path, HyphenCollection)
+        members = await self.client.get(self.url_path, HyphenCollection)
         return [self._scope_member(member) for member in members]
 
-    async def add(self, member: Union["Member",str]) -> None:
+    async def add(self, member: Union["Member", str]) -> None:
         """Add a member to the team"""
         if self.role_context == "organization":
-            raise IncorrectMethodException("To add a Member to an Organization, use `client.member.create()`. To add a Member to a Team, use `team.member.add()`.")
+            raise IncorrectMethodException(
+                "To add a Member to an Organization, use `client.member.create()`. To add a Member to a Team, use `team.member.add()`."
+            )
 
-        member = await self.client.put(self.url_path,
-                               instance=MemberIdsReference(members=[member]))
+        member.roles = [
+            Role(
+                name="teamMember",
+                context=self.role_context,
+                context_id=self.role_context_id,
+            )
+        ]
+        _ = await self.client.put(
+            self.url_path, instance=MemberIdsReference(members=[member])
+        )
         # the only way to get the full member scoped is via team list at the moment
         for refreshed_member in await self.list():
             if member.id == refreshed_member.id:
@@ -177,21 +212,27 @@ class AsyncMemberFactory(MemberFactory):
     async def remove(self, member: Union["Member"]) -> None:
         """Remove a member from the team"""
         if self.role_context == "organization":
-            raise IncorrectMethodException("To delete a Member from an Organization, use `client.member.delete()`. To remove a Member from a Team, use `team.member.remove()`.")
+            raise IncorrectMethodException(
+                "To delete a Member from an Organization, use `client.member.delete()`. To remove a Member from a Team, use `team.member.remove()`."
+            )
         return await self.client.delete(f"{self.url_path}/{member.id}")
 
-    async def assign_role(self, role_name: str, members:List[Member]) -> None:
+    async def assign_role(self, role_name: str, members: List[Member]) -> None:
         """Assign a role to a member for either a team or an organization."""
         members = self._apply_role_to_members(role_name, members)
 
         # TODO: should verify the response object
-        _ = await self.client.put(f"{self.url_path}",
-                             instance=MemberIdsReference(members=members))
+        _ = await self.client.put(
+            f"{self.url_path}", instance=MemberIdsReference(members=members)
+        )
         return [self._scope_member(member) for member in members]
 
     async def revoke_role(self, role: Union[Role, str], member: Member) -> None:
         if self.role_context == "organization":
-            raise NotImplementedError("Revoking roles from an organization is not yet supported.")
-
+            raise NotImplementedError(
+                "Revoking roles from an organization is not yet supported."
+            )
         role_name = getattr(role, "name", role)
-        return await self.client.delete(f"{self.url_path}/{member.id}/roles", LocalizedRole(roles=[role_name]))
+        return await self.client.delete(
+            f"{self.url_path}/{member.id}/roles", LocalizedRole(roles=[role_name])
+        )

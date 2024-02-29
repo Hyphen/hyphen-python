@@ -15,6 +15,8 @@ services:
       - ./tests:/app/tests
       - ./hyphen:/app/hyphen
       - ./.pytest_cache:/app/.pytest_cache
+      - ./pytest.ini:/app/pytest.ini
+      - ./prospector.yml:/app/prospector.yml
 
   docs:
     hostname: docs

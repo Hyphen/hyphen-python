@@ -20,12 +20,12 @@ interactions:
     uri: http://engine:3000/api/auth/m2m
   response:
     body:
-      string: '{"access_token":"secret", "access_token_expires_in":3600000,"id_token":"secret","access_token_expires_at":1709163009090.2668,"token_type":"Bearer"}'
+      string: '{"access_token":"secret", "access_token_expires_in":3600000,"id_token":"secret","access_token_expires_at":1709183066151.8271,"token_type":"Bearer"}'
     headers:
       Connection:
       - keep-alive
       Date:
-      - Wed, 28 Feb 2024 22:30:09 GMT
+      - Thu, 29 Feb 2024 04:04:26 GMT
       Keep-Alive:
       - timeout=72
       Origin-Agent-Cluster:
@@ -83,7 +83,7 @@ interactions:
       Connection:
       - keep-alive
       Date:
-      - Wed, 28 Feb 2024 22:30:09 GMT
+      - Thu, 29 Feb 2024 04:04:26 GMT
       Keep-Alive:
       - timeout=72
       Origin-Agent-Cluster:
@@ -110,6 +110,80 @@ interactions:
       - '41'
       content-type:
       - application/json; charset=utf-8
+      vary:
+      - Origin
+    status:
+      code: 200
+      message: OK
+- request:
+    body: ''
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - xxxxx-xxxxx-xxxxx
+      connection:
+      - keep-alive
+      content-type:
+      - application/json
+      host:
+      - engine:3000
+      user-agent:
+      - python-httpx/0.26.0
+    method: GET
+    uri: http://engine:3000/healthcheck
+  response:
+    body:
+      string: <!doctype html><html lang="en"><head><script>window.REACT_APP_ENV="__RUN_TIME_ENVS__"</script><meta
+        charset="utf-8"/><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta
+        name="viewport" content="width=device-width,initial-scale=1"/><meta name="theme-color"
+        content="#000000"/><meta name="description" content="Hyphen Engine"/><link
+        rel="apple-touch-icon" type="image/svg+xml" href="/favicon.svg"/><link rel="manifest"
+        href="/manifest.json"/><title>Hyphen Engine Portal</title><script defer="defer"
+        src="/static/js/main.243fdb2c.js"></script><link href="/static/css/main.79569a62.css"
+        rel="stylesheet"></head><body><noscript>You need to enable JavaScript to run
+        this app.</noscript><div id="root"></div></body></html>
+    headers:
+      Connection:
+      - keep-alive
+      Date:
+      - Thu, 29 Feb 2024 04:04:26 GMT
+      Keep-Alive:
+      - timeout=72
+      Origin-Agent-Cluster:
+      - ?1
+      Referrer-Policy:
+      - no-referrer
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-DNS-Prefetch-Control:
+      - 'off'
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - '0'
+      accept-ranges:
+      - bytes
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - public, max-age=0
+      content-length:
+      - '727'
+      content-type:
+      - text/html; charset=UTF-8
+      etag:
+      - W/"2d7-18decfbe694"
+      last-modified:
+      - Tue, 27 Feb 2024 23:52:28 GMT
       vary:
       - Origin
     status:
