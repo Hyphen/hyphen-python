@@ -49,30 +49,33 @@ def vcr_config():
 @pytest.fixture(scope="function", autouse=True)
 def reset_engine_db(settings):
     client = None
-    def replace_oids(part):
-        if isinstance(part, dict):
-            for k, v in part.items():
-                if k in ("_id","id",):
-                    part[k] = bson.ObjectId(v['oid'])
-                else:
-                    part[k] = replace_oids(v)
-        return part
-    try:
-        client = MongoClient(settings.test_hyphen_mongodb_uri)
-        db = client.test
-        collections = ("members", "teams", "organizations",)
-        for collection in collections:
-            db[collection].delete_many({})
-        for collection in collections[::-1]:
-            bulk_file = Path(__file__).parent / f"assets/foundational_test_state/{collection}.json"
-            bulk = json.loads(bulk_file.read_text())
-            for doc in bulk:
-                doc = replace_oids(doc)
-            db[collection].insert_many(bulk)
+    if settings.test_environment == "CI":
         yield
-    finally:
-        if client:
-            client.close()
+    else:
+        def replace_oids(part):
+            if isinstance(part, dict):
+                for k, v in part.items():
+                    if k in ("_id","id",):
+                        part[k] = bson.ObjectId(v['oid'])
+                    else:
+                        part[k] = replace_oids(v)
+            return part
+        try:
+            client = MongoClient(settings.test_hyphen_mongodb_uri)
+            db = client.test
+            collections = ("members", "teams", "organizations",)
+            for collection in collections:
+                db[collection].delete_many({})
+            for collection in collections[::-1]:
+                bulk_file = Path(__file__).parent / f"assets/foundational_test_state/{collection}.json"
+                bulk = json.loads(bulk_file.read_text())
+                for doc in bulk:
+                    doc = replace_oids(doc)
+                db[collection].insert_many(bulk)
+            yield
+        finally:
+            if client:
+                client.close()
 
 @pytest.fixture(scope="function")
 def client_args(settings):
