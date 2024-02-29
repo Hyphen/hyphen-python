@@ -7,6 +7,7 @@ import bson
 
 from pydantic_settings import BaseSettings
 
+CASSETTE_DIR = "/app/app/tests/assets/tools/cassettes"
 
 class TestSettings(BaseSettings):
     test_hyphen_url: str
@@ -45,6 +46,7 @@ def scrub_m2m_response(response):
 @pytest.fixture(scope="module")
 def vcr_config():
     return {
+        "cassette_library_dir": CASSETTE_DIR,
         "filter_headers": [("authorization", "xxxxx-xxxxx-xxxxx")],
         "before_record_request": scrub_m2m_request,
         "before_record_response": scrub_m2m_response,
@@ -52,12 +54,16 @@ def vcr_config():
 
 
 @pytest.fixture(scope="function", autouse=True)
-def reset_engine_db(settings):
+def reset_engine_db(settings, pytestconfig):
     client = None
-    if settings.test_environment == "CI":
+    running_in_ci = settings.test_environment == "CI"
+    live = pytestconfig.option.vcr_record = "all"
+    cassettes_present = [p for p in Path(CASSETTE_DIR).glob("*.yaml")]
+
+    # only rebuild when 'live' or no cassettes. Never rebuild in CI
+    if running_in_ci or (not live) or cassettes_present:
         yield
     else:
-
         def replace_oids(part):
             if isinstance(part, dict):
                 for k, v in part.items():
