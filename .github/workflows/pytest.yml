@@ -51,6 +51,7 @@ jobs:
         env:
           ENV_FILE: ${{ secrets.ENV_FILE }}
           TEST_ENVIRONMENT: CI
+          ENVIRONMENT: development
         run: /bin/bash utils/get_env_for_github_actions.sh
       - name: create docker network
         run: docker network create hyphen
