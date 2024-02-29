@@ -56,7 +56,9 @@ jobs:
         run:  /bin/bash utils/get_env_for_github_actions.sh
       - name: create docker network
         run: docker network create hyphen
+      - name: build docker image
+        run: docker build -f dockerfiles/CI.Dockerfile -t hyphen .
       - name: run black
-        run: docker run --rm --env-file .env chat_api /bin/bash -c "black --check ."
+        run: docker run --rm --env-file .env hyphen /bin/bash -c "black --check ."
       - name: run prospector
-        run: docker run --rm --env-file .env chat_api /bin/bash -c "prospector"
+        run: docker run --rm --env-file .env hyphen /bin/bash -c "prospector"
