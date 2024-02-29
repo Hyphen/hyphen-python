@@ -18,6 +18,11 @@ class Role(BaseModel):
     def serialize(self) -> dict:
         return self.name
 
+    def __eq__(self, __value: object) -> bool:
+        if isinstance(__value, str):
+            return self.name == __value
+        return super().__eq__(__value)
+
 
 class LocalizedRole(BaseModel):
     roles: List[str]
