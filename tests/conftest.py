@@ -9,6 +9,7 @@ from pydantic_settings import BaseSettings
 
 CASSETTE_DIR = "/app/app/tests/assets/tools/cassettes"
 
+
 class TestSettings(BaseSettings):
     test_hyphen_url: str
     test_hyphen_mongodb_uri: str
@@ -60,10 +61,12 @@ def reset_engine_db(settings, pytestconfig):
     live = pytestconfig.option.vcr_record = "all"
     cassettes_present = [p for p in Path(CASSETTE_DIR).glob("*.yaml")]
 
-    # only rebuild when 'live' or no cassettes. Never rebuild in CI
-    if running_in_ci or (not live) or cassettes_present:
+    # never rebuild in CI
+    if running_in_ci:
         yield
-    else:
+    # always rebuild if live, or if there are no cassettes
+    if live or not cassettes_present:
+
         def replace_oids(part):
             if isinstance(part, dict):
                 for k, v in part.items():
