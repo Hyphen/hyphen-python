@@ -114,6 +114,12 @@ class MemberFactory(BaseFactory):
 
     def assign_role(self, role_name: str, members: List[Member]) -> None:
         """Assign a role to a member for either a team or an organization."""
+        try:
+            _ = (o for o in members)
+        except TypeError as e:
+            raise ValueError(
+                "Members must be an iterable of Member objects, you passed a single instance Member."
+            ) from e
         members = self._apply_role_to_members(role_name, members)
 
         # TODO: should verify the response object
