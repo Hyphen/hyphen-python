@@ -9,6 +9,7 @@ from pydantic_settings import BaseSettings
 
 CASSETTE_LIBRARY_DIR = "/app/tests/assets/tools/vcr_cassettes"
 
+
 class TestSettings(BaseSettings):
     test_hyphen_url: str
     test_hyphen_mongodb_uri: str
@@ -57,11 +58,14 @@ def vcr_config():
 def reset_engine_db(settings, pytestconfig, request):
     client = None
     live = pytestconfig.option.vcr_record == "all"
-    cassette_class, cassette_name= request.node.nodeid.split("::")[1:]
-    missing_cassette = not (Path(CASSETTE_LIBRARY_DIR) / f"{cassette_class}.{cassette_name}.yaml").exists()
+    cassette_class, cassette_name = request.node.nodeid.split("::")[1:]
+    missing_cassette = not (
+        Path(CASSETTE_LIBRARY_DIR) / f"{cassette_class}.{cassette_name}.yaml"
+    ).exists()
     if settings.test_environment == "CI":
         yield
     elif live or missing_cassette:
+
         def replace_oids(part):
             if isinstance(part, dict):
                 for k, v in part.items():
@@ -99,6 +103,7 @@ def reset_engine_db(settings, pytestconfig, request):
                 client.close()
     else:
         yield
+
 
 @pytest.fixture(scope="function")
 def client_args(settings):
