@@ -29,7 +29,7 @@
     {
       "resourceType": "team",
       "resourceId": "65dfb23ed3b7fc20de65a34c",
-      "roles": []
+      "roles": ["teamOwner"]
     }
   ],
   "meta": {
