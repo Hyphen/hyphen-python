@@ -58,4 +58,4 @@ jobs:
       - name: build docker image
         run: docker build -f dockerfiles/CI.Dockerfile -t hyphen .
       - name: run pytest
-        run:  docker run --rm hyphen /bin/bash -c "pytest"
+        run:  docker run --rm hyphen --workdir /app/app /bin/bash -c "pytest"

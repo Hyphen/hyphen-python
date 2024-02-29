@@ -62,6 +62,6 @@ jobs:
           ENVIRONMENT: development
         run: docker build -f dockerfiles/CI.Dockerfile -t hyphen .
       - name: run black
-        run: docker run --rm --env-file .env hyphen /bin/bash -c "black --check ."
+        run: docker run --rm --env-file .env -v ${PWD}/prospector.yml /app/prospector.yml hyphen /bin/bash -c "black --check ."
       - name: run prospector
-        run: docker run --rm --env-file .env hyphen /bin/bash -c "prospector"
+        run: docker run --rm --env-file .env -v ${PWD}/prospector.yml /app/prospector.yml hyphen /bin/bash -c "prospector"

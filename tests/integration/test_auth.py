@@ -22,7 +22,7 @@ class TestAuth:
         )
 
         assert hyphen.authenticated
-
+    @m.vcr
     @m.context("and no or bad auth is provided")
     @m.it("should shortcircuit")
     def test_no_auth_sad_path(self, settings):
