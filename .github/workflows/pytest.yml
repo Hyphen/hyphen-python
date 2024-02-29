@@ -1,0 +1,55 @@
+name: test-hyphen-python
+run-name: PyTest Time! 🚀
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths-ignore:
+      - "*.md"
+      - ".git/**"
+      - "docs/**"
+      - "assets/**"
+      - ".gitignore"
+      - "nginx.conf"
+      - ".cloudbuild.yml"
+jobs:
+  skip-ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Set labels
+        id: check-for-skip-ci-label
+        run: |
+         PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+         echo "pull request number: ${PR_NUMBER}"
+         LABELS="$(gh api repos/$OWNER/$REPO_NAME/pulls/$PR_NUMBER --jq '.labels.[].name')"; echo "labels on current PR: $LABELS"
+         echo "labels=$LABELS" >> "$GITHUB_OUTPUT"
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+      - name: Set Draft Status
+        id: check-for-draft-status
+        run: |
+         ISDRAFT="${{ github.event.pull_request.draft }}"
+         echo "isdraft=$ISDRAFT" >> "$GITHUB_OUTPUT"
+        shell: bash
+    outputs:
+      labels: ${{ steps.check-for-skip-ci-label.outputs.labels }}
+      isdraft: ${{ steps.check-for-draft-status.outputs.isdraft == 'true'}}
+
+  run-pytest:
+    needs: skip-ci
+    if: ${{ !contains(needs.skip-ci.outputs.labels, 'skip-ci') }} && ${{ !needs.skip-ci.outputs.isdraft }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "🎉 PyTest triggered by a ${{ github.event_name }} event."
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: write .env file
+        env:
+          ENV_FILE: ${{ secrets.ENV_FILE }}
+        run: /bin/bash utils/get_env_for_github_actions.sh
+      - name: run pytest
+        run:  docker compose run --rm hyphen /bin/bash -c "pytest"
