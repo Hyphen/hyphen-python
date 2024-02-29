@@ -7,6 +7,7 @@ import bson
 
 from pydantic_settings import BaseSettings
 
+CASSETTE_LIBRARY_DIR = "/app/tests/assets/tools/vcr_cassettes"
 
 class TestSettings(BaseSettings):
     test_hyphen_url: str
@@ -45,6 +46,7 @@ def scrub_m2m_response(response):
 @pytest.fixture(scope="module")
 def vcr_config():
     return {
+        "cassette_library_dir": CASSETTE_LIBRARY_DIR,
         "filter_headers": [("authorization", "xxxxx-xxxxx-xxxxx")],
         "before_record_request": scrub_m2m_request,
         "before_record_response": scrub_m2m_response,

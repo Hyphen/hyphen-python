@@ -16,16 +16,18 @@ interactions:
       - engine:3000
       user-agent:
       - python-httpx/0.26.0
+      x-hyphen-impersonate:
+      - 65dfaa778a70bcfa248c6c03
     method: POST
     uri: http://engine:3000/api/auth/m2m
   response:
     body:
-      string: '{"access_token":"secret", "access_token_expires_in":3600000,"id_token":"secret","access_token_expires_at":1709158652232.523,"token_type":"Bearer"}'
+      string: '{"access_token":"secret", "access_token_expires_in":3600000,"id_token":"secret","access_token_expires_at":1709250925722.9568,"token_type":"Bearer"}'
     headers:
       Connection:
       - keep-alive
       Date:
-      - Wed, 28 Feb 2024 21:17:32 GMT
+      - Thu, 29 Feb 2024 22:55:25 GMT
       Keep-Alive:
       - timeout=72
       Origin-Agent-Cluster:
@@ -58,7 +60,7 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"name":"Garrett Group"}'
+    body: '{"name":"Red Team"}'
     headers:
       accept:
       - application/json
@@ -69,23 +71,25 @@ interactions:
       connection:
       - keep-alive
       content-length:
-      - '24'
+      - '19'
       content-type:
       - application/json
       host:
       - engine:3000
       user-agent:
       - python-httpx/0.26.0
+      x-hyphen-impersonate:
+      - 65dfaa778a70bcfa248c6c03
     method: POST
-    uri: http://engine:3000/api/organizations
+    uri: http://engine:3000/api/organizations/65dfaa909ea1295731011c5a/teams
   response:
     body:
-      string: '{"id":"65dfa2ec846e0004123c688d","name":"Garrett Group"}'
+      string: '{"id":"65e10b5d91b760ec36a328ee","name":"Red Team"}'
     headers:
       Connection:
       - keep-alive
       Date:
-      - Wed, 28 Feb 2024 21:17:32 GMT
+      - Thu, 29 Feb 2024 22:55:25 GMT
       Keep-Alive:
       - timeout=72
       Origin-Agent-Cluster:
@@ -109,7 +113,68 @@ interactions:
       access-control-allow-origin:
       - '*'
       content-length:
-      - '56'
+      - '51'
+      content-type:
+      - application/json; charset=utf-8
+      vary:
+      - Origin
+    status:
+      code: 200
+      message: OK
+- request:
+    body: ''
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - xxxxx-xxxxx-xxxxx
+      connection:
+      - keep-alive
+      content-type:
+      - application/json
+      host:
+      - engine:3000
+      user-agent:
+      - python-httpx/0.26.0
+      x-hyphen-impersonate:
+      - 65dfaa778a70bcfa248c6c03
+    method: GET
+    uri: http://engine:3000/api/organizations/65dfaa909ea1295731011c5a/teams
+  response:
+    body:
+      string: '{"data":[{"id":"65dfb23ed3b7fc20de65a34c","name":"marketing"},{"id":"65dfb27cce979905eb49ed47","name":"Sales"},{"id":"65e10b5d91b760ec36a328ee","name":"Red
+        Team"}]}'
+    headers:
+      Connection:
+      - keep-alive
+      Date:
+      - Thu, 29 Feb 2024 22:55:25 GMT
+      Keep-Alive:
+      - timeout=72
+      Origin-Agent-Cluster:
+      - ?1
+      Referrer-Policy:
+      - no-referrer
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-DNS-Prefetch-Control:
+      - 'off'
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - '0'
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '164'
       content-type:
       - application/json; charset=utf-8
       vary:

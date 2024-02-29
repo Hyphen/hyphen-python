@@ -16,18 +16,16 @@ interactions:
       - engine:3000
       user-agent:
       - python-httpx/0.26.0
-      x-hyphen-impersonate:
-      - 65dfaa778a70bcfa248c6c03
     method: POST
     uri: http://engine:3000/api/auth/m2m
   response:
     body:
-      string: '{"access_token":"secret", "access_token_expires_in":3600000,"id_token":"secret","access_token_expires_at":1709167205943.229,"token_type":"Bearer"}'
+      string: '{"access_token":"secret", "access_token_expires_in":3600000,"id_token":"secret","access_token_expires_at":1709250927047.852,"token_type":"Bearer"}'
     headers:
       Connection:
       - keep-alive
       Date:
-      - Wed, 28 Feb 2024 23:40:05 GMT
+      - Thu, 29 Feb 2024 22:55:27 GMT
       Keep-Alive:
       - timeout=72
       Origin-Agent-Cluster:
@@ -60,7 +58,7 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"name":"Red Team"}'
+    body: ''
     headers:
       accept:
       - application/json
@@ -70,26 +68,23 @@ interactions:
       - xxxxx-xxxxx-xxxxx
       connection:
       - keep-alive
-      content-length:
-      - '19'
       content-type:
       - application/json
       host:
       - engine:3000
       user-agent:
       - python-httpx/0.26.0
-      x-hyphen-impersonate:
-      - 65dfaa778a70bcfa248c6c03
-    method: POST
-    uri: http://engine:3000/api/organizations/65dfaa909ea1295731011c5a/teams
+    method: GET
+    uri: http://engine:3000/api/quote
   response:
     body:
-      string: '{"id":"65dfc456846e0004123c6897","name":"Red Team"}'
+      string: '{"quote":"I do not mean to pry, but you don''t by any chance happen
+        to have six fingers on your right hand?"}'
     headers:
       Connection:
       - keep-alive
       Date:
-      - Wed, 28 Feb 2024 23:40:06 GMT
+      - Thu, 29 Feb 2024 22:55:27 GMT
       Keep-Alive:
       - timeout=72
       Origin-Agent-Cluster:
@@ -113,7 +108,7 @@ interactions:
       access-control-allow-origin:
       - '*'
       content-length:
-      - '51'
+      - '108'
       content-type:
       - application/json; charset=utf-8
       vary:
@@ -138,19 +133,24 @@ interactions:
       - engine:3000
       user-agent:
       - python-httpx/0.26.0
-      x-hyphen-impersonate:
-      - 65dfaa778a70bcfa248c6c03
     method: GET
-    uri: http://engine:3000/api/organizations/65dfaa909ea1295731011c5a/teams
+    uri: http://engine:3000/healthcheck
   response:
     body:
-      string: '{"data":[{"id":"65dfb23ed3b7fc20de65a34c","name":"marketing"},{"id":"65dfb27cce979905eb49ed47","name":"Sales"},{"id":"65dfc456846e0004123c6897","name":"Red
-        Team"}]}'
+      string: <!doctype html><html lang="en"><head><script>window.REACT_APP_ENV="__RUN_TIME_ENVS__"</script><meta
+        charset="utf-8"/><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta
+        name="viewport" content="width=device-width,initial-scale=1"/><meta name="theme-color"
+        content="#000000"/><meta name="description" content="Hyphen Engine"/><link
+        rel="apple-touch-icon" type="image/svg+xml" href="/favicon.svg"/><link rel="manifest"
+        href="/manifest.json"/><title>Hyphen Engine Portal</title><script defer="defer"
+        src="/static/js/main.243fdb2c.js"></script><link href="/static/css/main.79569a62.css"
+        rel="stylesheet"></head><body><noscript>You need to enable JavaScript to run
+        this app.</noscript><div id="root"></div></body></html>
     headers:
       Connection:
       - keep-alive
       Date:
-      - Wed, 28 Feb 2024 23:40:06 GMT
+      - Thu, 29 Feb 2024 22:55:27 GMT
       Keep-Alive:
       - timeout=72
       Origin-Agent-Cluster:
@@ -171,12 +171,20 @@ interactions:
       - none
       X-XSS-Protection:
       - '0'
+      accept-ranges:
+      - bytes
       access-control-allow-origin:
       - '*'
+      cache-control:
+      - public, max-age=0
       content-length:
-      - '164'
+      - '727'
       content-type:
-      - application/json; charset=utf-8
+      - text/html; charset=UTF-8
+      etag:
+      - W/"2d7-18df60be53f"
+      last-modified:
+      - Thu, 29 Feb 2024 18:06:31 GMT
       vary:
       - Origin
     status:
