@@ -4,6 +4,7 @@ from pytest import mark as m
 from hyphen.settings import settings
 from hyphen import HyphenClient
 
+
 @m.describe("When working locally")
 @m.unit
 class TestSanity:
@@ -16,7 +17,7 @@ class TestSanity:
             host=settings.test_hyphen_url,
             client_id=settings.test_hyphen_client_id,
             client_secret=settings.test_hyphen_client_secret,
-            organization_id="xxxx-xxxx-xxxx"
+            organization_id="xxxx-xxxx-xxxx",
         )
         assert hyphen.authenticated
         assert hyphen.healthcheck()

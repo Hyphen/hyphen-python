@@ -3,6 +3,7 @@ from unittest.mock import patch
 
 from hyphen import HyphenClient
 
+
 @m.describe("When initializing")
 @m.unit
 class TestNoDuplicateInstances:
@@ -12,5 +13,6 @@ class TestNoDuplicateInstances:
         with patch("hyphen.client.HTTPRequestClient") as mock_client:
             _ = HyphenClient(
                 organization_id="xxxx-xxxx-xxxx-xxxx",
-                host=settings.test_hyphen_url,)
+                host=settings.test_hyphen_url,
+            )
             mock_client.assert_called_once()
