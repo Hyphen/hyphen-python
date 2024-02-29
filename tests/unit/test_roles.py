@@ -1,6 +1,7 @@
 from pytest import mark as m
 from hyphen.roles import Role
 
+
 @m.describe("Roles")
 class TestRole:
 
