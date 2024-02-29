@@ -51,5 +51,7 @@ jobs:
         env:
           ENV_FILE: ${{ secrets.ENV_FILE }}
         run: /bin/bash utils/get_env_for_github_actions.sh
+      - name: create docker network
+        run: docker network create hyphen
       - name: run pytest
         run:  docker compose run --rm hyphen /bin/bash -c "pytest"
