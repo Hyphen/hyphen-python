@@ -54,12 +54,14 @@ def vcr_config():
 
 
 @pytest.fixture(scope="function", autouse=True)
-def reset_engine_db(settings):
+def reset_engine_db(settings, pytestconfig, request):
     client = None
+    live = pytestconfig.option.vcr_record == "all"
+    cassette_class, cassette_name= request.node.nodeid.split("::")[1:]
+    missing_cassette = not (Path(CASSETTE_LIBRARY_DIR) / f"{cassette_class}.{cassette_name}.yaml").exists()
     if settings.test_environment == "CI":
         yield
-    else:
-
+    elif live or missing_cassette:
         def replace_oids(part):
             if isinstance(part, dict):
                 for k, v in part.items():
@@ -95,7 +97,8 @@ def reset_engine_db(settings):
         finally:
             if client:
                 client.close()
-
+    else:
+        yield
 
 @pytest.fixture(scope="function")
 def client_args(settings):
