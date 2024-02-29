@@ -65,7 +65,7 @@ def reset_engine_db(settings, pytestconfig):
     if running_in_ci:
         yield
     # always rebuild if live, or if there are no cassettes
-    if live or not cassettes_present:
+    elif live or not cassettes_present:
 
         def replace_oids(part):
             if isinstance(part, dict):
