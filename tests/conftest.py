@@ -13,6 +13,7 @@ class TestSettings(BaseSettings):
     test_hyphen_mongodb_uri: str
     test_hyphen_client_id: str
     test_hyphen_client_secret: str
+    test_environment: str = "development"
 
 
 @pytest.fixture(scope="module")
