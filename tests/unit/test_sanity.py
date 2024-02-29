@@ -9,6 +9,7 @@ from hyphen import HyphenClient
 @m.unit
 class TestSanity:
 
+    @m.vcr()
     @m.context("and setting up a dev environment")
     @m.it("should connect to the local hyphen engine")
     def test_check_dev_setup(self, settings):
