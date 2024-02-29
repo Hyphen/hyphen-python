@@ -194,6 +194,5 @@ class AsyncMemberFactory(MemberFactory):
     async def revoke_role(self, role: Union[Role, str], member: Member) -> None:
         if self.role_context == "organization":
             raise NotImplementedError("Revoking roles from an organization is not yet supported.")
-
         role_name = getattr(role, "name", role)
         return await self.client.delete(f"{self.url_path}/{member.id}/roles", LocalizedRole(roles=[role_name]))

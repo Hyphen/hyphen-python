@@ -1,0 +1,665 @@
+interactions:
+- request:
+    body: '{"clientId":"secret","clientSecret":"secret"}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '72'
+      content-type:
+      - application/json
+      host:
+      - engine:3000
+      user-agent:
+      - python-httpx/0.26.0
+      x-hyphen-impersonate:
+      - 65dfaa778a70bcfa248c6c03
+    method: POST
+    uri: http://engine:3000/api/auth/m2m
+  response:
+    body:
+      string: '{"access_token":"secret", "access_token_expires_in":3600000,"id_token":"secret","access_token_expires_at":1709176766051.723,"token_type":"Bearer"}'
+    headers:
+      Connection:
+      - keep-alive
+      Date:
+      - Thu, 29 Feb 2024 02:19:26 GMT
+      Keep-Alive:
+      - timeout=72
+      Origin-Agent-Cluster:
+      - ?1
+      Referrer-Policy:
+      - no-referrer
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-DNS-Prefetch-Control:
+      - 'off'
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - '0'
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '2572'
+      content-type:
+      - application/json; charset=utf-8
+      vary:
+      - Origin
+    status:
+      code: 200
+      message: OK
+- request:
+    body: ''
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - xxxxx-xxxxx-xxxxx
+      connection:
+      - keep-alive
+      content-type:
+      - application/json
+      host:
+      - engine:3000
+      user-agent:
+      - python-httpx/0.26.0
+      x-hyphen-impersonate:
+      - 65dfaa778a70bcfa248c6c03
+    method: GET
+    uri: http://engine:3000/api/organizations/65dfaa909ea1295731011c5a/teams
+  response:
+    body:
+      string: '{"data":[{"id":"65dfb23ed3b7fc20de65a34c","name":"marketing"},{"id":"65dfb27cce979905eb49ed47","name":"Sales"}]}'
+    headers:
+      Connection:
+      - keep-alive
+      Date:
+      - Thu, 29 Feb 2024 02:19:26 GMT
+      Keep-Alive:
+      - timeout=72
+      Origin-Agent-Cluster:
+      - ?1
+      Referrer-Policy:
+      - no-referrer
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-DNS-Prefetch-Control:
+      - 'off'
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - '0'
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '112'
+      content-type:
+      - application/json; charset=utf-8
+      vary:
+      - Origin
+    status:
+      code: 200
+      message: OK
+- request:
+    body: ''
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - xxxxx-xxxxx-xxxxx
+      connection:
+      - keep-alive
+      content-type:
+      - application/json
+      host:
+      - engine:3000
+      user-agent:
+      - python-httpx/0.26.0
+      x-hyphen-impersonate:
+      - 65dfaa778a70bcfa248c6c03
+    method: GET
+    uri: http://engine:3000/api/organizations/65dfaa909ea1295731011c5a/members/65dfd847846e0004123c6899
+  response:
+    body:
+      string: '{"id":"65dfd847846e0004123c6899","firstName":"Normal","lastName":"User"}'
+    headers:
+      Connection:
+      - keep-alive
+      Date:
+      - Thu, 29 Feb 2024 02:19:26 GMT
+      Keep-Alive:
+      - timeout=72
+      Origin-Agent-Cluster:
+      - ?1
+      Referrer-Policy:
+      - no-referrer
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-DNS-Prefetch-Control:
+      - 'off'
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - '0'
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '72'
+      content-type:
+      - application/json; charset=utf-8
+      vary:
+      - Origin
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"firstName":"New","lastName":"Member"}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - xxxxx-xxxxx-xxxxx
+      connection:
+      - keep-alive
+      content-length:
+      - '39'
+      content-type:
+      - application/json
+      host:
+      - engine:3000
+      user-agent:
+      - python-httpx/0.26.0
+      x-hyphen-impersonate:
+      - 65dfaa778a70bcfa248c6c03
+    method: POST
+    uri: http://engine:3000/api/organizations/65dfaa909ea1295731011c5a/members
+  response:
+    body:
+      string: '{"id":"65dfe9ae846e0004123c68b0","firstName":"New","lastName":"Member"}'
+    headers:
+      Connection:
+      - keep-alive
+      Date:
+      - Thu, 29 Feb 2024 02:19:26 GMT
+      Keep-Alive:
+      - timeout=72
+      Origin-Agent-Cluster:
+      - ?1
+      Referrer-Policy:
+      - no-referrer
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-DNS-Prefetch-Control:
+      - 'off'
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - '0'
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '71'
+      content-type:
+      - application/json; charset=utf-8
+      vary:
+      - Origin
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"clientId":"secret","clientSecret":"secret"}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '72'
+      content-type:
+      - application/json
+      host:
+      - engine:3000
+      user-agent:
+      - python-httpx/0.26.0
+      x-hyphen-impersonate:
+      - 65dfd847846e0004123c6899
+    method: POST
+    uri: http://engine:3000/api/auth/m2m
+  response:
+    body:
+      string: '{"access_token":"secret", "access_token_expires_in":3600000,"id_token":"secret","access_token_expires_at":1709176766123.497,"token_type":"Bearer"}'
+    headers:
+      Connection:
+      - keep-alive
+      Date:
+      - Thu, 29 Feb 2024 02:19:26 GMT
+      Keep-Alive:
+      - timeout=72
+      Origin-Agent-Cluster:
+      - ?1
+      Referrer-Policy:
+      - no-referrer
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-DNS-Prefetch-Control:
+      - 'off'
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - '0'
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '2572'
+      content-type:
+      - application/json; charset=utf-8
+      vary:
+      - Origin
+    status:
+      code: 200
+      message: OK
+- request:
+    body: ''
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - xxxxx-xxxxx-xxxxx
+      connection:
+      - keep-alive
+      content-type:
+      - application/json
+      host:
+      - engine:3000
+      user-agent:
+      - python-httpx/0.26.0
+      x-hyphen-impersonate:
+      - 65dfd847846e0004123c6899
+    method: GET
+    uri: http://engine:3000/api/organizations/65dfaa909ea1295731011c5a/teams/65dfb23ed3b7fc20de65a34c
+  response:
+    body:
+      string: '{"message":"Team with id ''65dfb23ed3b7fc20de65a34c'' not found or
+        you do not have permission to access it.","requestId":"t1s7F1PUKJQeRUD2YtAZRT","errorCode":"gWzq2uGN9JvLghx4sMfpcp"}'
+    headers:
+      Connection:
+      - keep-alive
+      Date:
+      - Thu, 29 Feb 2024 02:19:26 GMT
+      Keep-Alive:
+      - timeout=72
+      Origin-Agent-Cluster:
+      - ?1
+      Referrer-Policy:
+      - no-referrer
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-DNS-Prefetch-Control:
+      - 'off'
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - '0'
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '181'
+      content-type:
+      - application/json; charset=utf-8
+      vary:
+      - Origin
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: '{"members":[{"id":"65dfd847846e0004123c6899","roles":["teamLead"]}]}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - xxxxx-xxxxx-xxxxx
+      connection:
+      - keep-alive
+      content-length:
+      - '68'
+      content-type:
+      - application/json
+      host:
+      - engine:3000
+      user-agent:
+      - python-httpx/0.26.0
+      x-hyphen-impersonate:
+      - 65dfaa778a70bcfa248c6c03
+    method: PUT
+    uri: http://engine:3000/api/organizations/65dfaa909ea1295731011c5a/teams/65dfb23ed3b7fc20de65a34c/members
+  response:
+    body:
+      string: ''
+    headers:
+      Connection:
+      - keep-alive
+      Date:
+      - Thu, 29 Feb 2024 02:19:26 GMT
+      Keep-Alive:
+      - timeout=72
+      Origin-Agent-Cluster:
+      - ?1
+      Referrer-Policy:
+      - no-referrer
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-DNS-Prefetch-Control:
+      - 'off'
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - '0'
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '0'
+      vary:
+      - Origin
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: ''
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - xxxxx-xxxxx-xxxxx
+      connection:
+      - keep-alive
+      content-type:
+      - application/json
+      host:
+      - engine:3000
+      user-agent:
+      - python-httpx/0.26.0
+      x-hyphen-impersonate:
+      - 65dfd847846e0004123c6899
+    method: GET
+    uri: http://engine:3000/api/organizations/65dfaa909ea1295731011c5a/teams/65dfb23ed3b7fc20de65a34c
+  response:
+    body:
+      string: '{"id":"65dfb23ed3b7fc20de65a34c","name":"marketing"}'
+    headers:
+      Connection:
+      - keep-alive
+      Date:
+      - Thu, 29 Feb 2024 02:19:26 GMT
+      Keep-Alive:
+      - timeout=72
+      Origin-Agent-Cluster:
+      - ?1
+      Referrer-Policy:
+      - no-referrer
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-DNS-Prefetch-Control:
+      - 'off'
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - '0'
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '52'
+      content-type:
+      - application/json; charset=utf-8
+      vary:
+      - Origin
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"members":[{"id":"65dfe9ae846e0004123c68b0","roles":["teamMember"]}]}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - xxxxx-xxxxx-xxxxx
+      connection:
+      - keep-alive
+      content-length:
+      - '70'
+      content-type:
+      - application/json
+      host:
+      - engine:3000
+      user-agent:
+      - python-httpx/0.26.0
+      x-hyphen-impersonate:
+      - 65dfd847846e0004123c6899
+    method: PUT
+    uri: http://engine:3000/api/organizations/65dfaa909ea1295731011c5a/teams/65dfb23ed3b7fc20de65a34c/members
+  response:
+    body:
+      string: ''
+    headers:
+      Connection:
+      - keep-alive
+      Date:
+      - Thu, 29 Feb 2024 02:19:26 GMT
+      Keep-Alive:
+      - timeout=72
+      Origin-Agent-Cluster:
+      - ?1
+      Referrer-Policy:
+      - no-referrer
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-DNS-Prefetch-Control:
+      - 'off'
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - '0'
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '0'
+      vary:
+      - Origin
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: ''
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - xxxxx-xxxxx-xxxxx
+      connection:
+      - keep-alive
+      content-type:
+      - application/json
+      host:
+      - engine:3000
+      user-agent:
+      - python-httpx/0.26.0
+      x-hyphen-impersonate:
+      - 65dfd847846e0004123c6899
+    method: GET
+    uri: http://engine:3000/api/organizations/65dfaa909ea1295731011c5a/teams/65dfb23ed3b7fc20de65a34c/members
+  response:
+    body:
+      string: '{"data":[{"id":"65dfaa778a70bcfa248c6c03","firstName":"test","lastName":"owner","roles":["teamOwner","teamMember"],"inheritedRoles":["teamMember"]},{"id":"65dfd847846e0004123c6899","firstName":"Normal","lastName":"User","roles":["teamLead"],"inheritedRoles":[]},{"id":"65dfe4c2846e0004123c68a7","firstName":"Leader","lastName":"User","roles":["teamLead","teamMember"],"inheritedRoles":[]},{"id":"65dfe9ae846e0004123c68b0","firstName":"New","lastName":"Member","roles":["teamMember"],"inheritedRoles":["teamMember"]}]}'
+    headers:
+      Connection:
+      - keep-alive
+      Date:
+      - Thu, 29 Feb 2024 02:19:26 GMT
+      Keep-Alive:
+      - timeout=72
+      Origin-Agent-Cluster:
+      - ?1
+      Referrer-Policy:
+      - no-referrer
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-DNS-Prefetch-Control:
+      - 'off'
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - '0'
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '517'
+      content-type:
+      - application/json; charset=utf-8
+      vary:
+      - Origin
+    status:
+      code: 200
+      message: OK
+- request:
+    body: ''
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - xxxxx-xxxxx-xxxxx
+      connection:
+      - keep-alive
+      content-type:
+      - application/json
+      host:
+      - engine:3000
+      user-agent:
+      - python-httpx/0.26.0
+      x-hyphen-impersonate:
+      - 65dfaa778a70bcfa248c6c03
+    method: GET
+    uri: http://engine:3000/api/organizations/65dfaa909ea1295731011c5a/teams/65dfb23ed3b7fc20de65a34c/members
+  response:
+    body:
+      string: '{"data":[{"id":"65dfaa778a70bcfa248c6c03","firstName":"test","lastName":"owner","roles":["teamOwner","teamMember"],"inheritedRoles":["teamMember"]},{"id":"65dfd847846e0004123c6899","firstName":"Normal","lastName":"User","roles":["teamLead"],"inheritedRoles":[]},{"id":"65dfe4c2846e0004123c68a7","firstName":"Leader","lastName":"User","roles":["teamLead","teamMember"],"inheritedRoles":[]},{"id":"65dfe9ae846e0004123c68b0","firstName":"New","lastName":"Member","roles":["teamMember"],"inheritedRoles":["teamMember"]}]}'
+    headers:
+      Connection:
+      - keep-alive
+      Date:
+      - Thu, 29 Feb 2024 02:19:26 GMT
+      Keep-Alive:
+      - timeout=72
+      Origin-Agent-Cluster:
+      - ?1
+      Referrer-Policy:
+      - no-referrer
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-DNS-Prefetch-Control:
+      - 'off'
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - '0'
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '517'
+      content-type:
+      - application/json; charset=utf-8
+      vary:
+      - Origin
+    status:
+      code: 200
+      message: OK
+version: 1
